@@ -1,0 +1,41 @@
+{
+    "name": "sapayth/sheet-wise",
+    "description": "Sync and manage your Google Sheets spreadsheet through your WordPress site. Show google sheet contents in your site.",
+    "type": "wordpress-plugin",
+    "license": "GPL v2",
+    "autoload": {
+        "psr-4": {
+            "SheetWise\\": "includes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sapayth H."
+        }
+    ],
+    "minimum-stability": "dev",
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "0.7.0",
+        "wp-coding-standards/wpcs": "dev-develop",
+        "phpcompatibility/phpcompatibility-wp": "dev-master",
+        "phpstan/phpstan": "2.0.x-dev"
+    },
+    "require": {
+        "wedevs/wp-utils": "dev-main",
+        "google/apiclient": "^2.15.0"
+    },
+    "scripts": {
+        "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
+    },
+    "extra": {
+        "google/apiclient-services": [
+            "Drive",
+            "Sheets"
+        ]
+    }
+}
