@@ -14,7 +14,6 @@ class GoogleSheet {
 	 * @since 1.1.1
 	 *
 	 * @param $scopes
-	 *
 	 */
 	private function get_client( $scopes = [] ) {
 		$credential = get_option( 'swise_service_account_credential', false );
@@ -86,5 +85,25 @@ class GoogleSheet {
 		}
 
 		return $list;
+	}
+
+	public function get_rows( $spreadsheet_id, $range = '1:1' ) {
+		$client = $this->get_client();
+
+		if ( is_null( $client ) ) {
+			return [];
+		}
+
+		$service = new Sheets( $client );
+
+		$response = $service->spreadsheets_values->get( $spreadsheet_id, $range );
+
+		if ( ! is_a( $response, 'Google\Service\Sheets\ValueRange' ) ) {
+			return [];
+		}
+
+		$values = $response->getValues();
+
+		return isset( $values[0] ) && is_array( $values[0] ) ? $values[0] : [];
 	}
 }
