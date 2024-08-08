@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import apiFetch from '@wordpress/api-fetch';
 import {addQueryArgs} from '@wordpress/url';
 
@@ -31,6 +31,7 @@ export default function NewIntegration() {
     const [rows, setRows] = useState( [] );
     const [currentSheet, setCurrentSheet] = useState( 'select' );
     const [loading, setLoading] = useState(true);
+    const [rowLoading, setRowLoading] = useState( false );
     const [error, setError] = useState(null);
 
     useEffect( () => {
@@ -62,6 +63,7 @@ export default function NewIntegration() {
 
     useEffect(() => {
         const fetchRows = async () => {
+            setRowLoading( true );
             let path = '/wp-json/swise/v1/sheets/' + currentSheet + '/rows';
 
             apiFetch( {
@@ -81,6 +83,7 @@ export default function NewIntegration() {
                     console.log( error );
                 } )
                 .finally( () => {
+                    setRowLoading( false );
                 });
         };
 
@@ -90,10 +93,45 @@ export default function NewIntegration() {
 
     }, [currentSheet]);
 
+    const contentRef = useRef(null);
+    const targetRef = useRef(null);
+    const [targetHeight, setTargetHeight] = useState(0);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const contentHeight = contentRef.current.offsetHeight + 300;
+            const viewportHeight = window.innerHeight;
+            setTargetHeight(viewportHeight - contentHeight);
+
+            console.log(contentHeight, viewportHeight, viewportHeight - contentHeight);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+
+    function RowLoading() {
+        if (rowLoading) {
+            return (
+                <div
+                    ref={targetRef} style={{ height: `${targetHeight}px` }}
+                    className="swise-flex swise-items-center swise-justify-center">
+                    <span className="swise-loading swise-loading-dots swise-loading-lg"></span>
+                </div>
+            )
+        }
+        return null;
+    }
+
     return (
-        <div className="swise-shadow-md sm:swise-rounded-lg">
+        <div ref={contentRef}>
             <table
-                className="swise-w-full swise-mt-12 swise-text-sm swise-text-left swise-text-gray-500">
+                className="swise-shadow-md sm:swise-rounded-lg swise-w-full swise-mt-12 swise-text-sm swise-text-left swise-text-gray-500">
                 <tbody>
                 <tr className="odd:swise-bg-white even:swise-bg-gray-50 swise-border-b">
                     <td
@@ -138,37 +176,41 @@ export default function NewIntegration() {
                 </tr>
                 </tbody>
             </table>
-            <table
-                className="swise-w-full swise-mt-12 swise-text-sm swise-text-left swise-text-gray-500">
-                <thead>
-                <tr className="swise-bg-gray-50">
-                    <th className="swise-px-6 swise-py-4 swise-font-medium swise-text-gray-900">
-                        {__( 'Spreadsheet Column Title', 'sheet-wise' )}
-                    </th>
-                    <th className="swise-px-6 swise-py-4 swise-font-medium swise-text-gray-900">
-                        {__( 'Event Code', 'sheet-wise' )}
-                    </th>
-                    <th className="swise-px-6 swise-py-4 swise-font-medium swise-text-gray-900">
-                        {__( 'Data Source', 'sheet-wise' )}
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                {rows.map( (row, index) => (
-                    <tr key={index} className="odd:swise-bg-white even:swise-bg-gray-50">
-                        <td className="swise-px-6 swise-py-4 swise-text-gray-900">
-                            {row}
-                        </td>
-                        <td className="swise-px-6 swise-py-4 swise-text-gray-900">
-                            event code
-                        </td>
-                        <td className="swise-px-6 swise-py-4 swise-text-gray-900">
-                            data source
-                        </td>
+
+            { (rows.length > 0 && !rowLoading) &&
+                <table
+                    className="swise-w-full swise-mt-12 swise-text-sm swise-text-left swise-text-gray-500">
+                    <thead>
+                    <tr className="swise-bg-gray-50">
+                        <th className="swise-px-6 swise-py-4 swise-font-medium swise-text-gray-900">
+                            {__( 'Spreadsheet Column Title', 'sheet-wise' )}
+                        </th>
+                        <th className="swise-px-6 swise-py-4 swise-font-medium swise-text-gray-900">
+                            {__( 'Event Code', 'sheet-wise' )}
+                        </th>
+                        <th className="swise-px-6 swise-py-4 swise-font-medium swise-text-gray-900">
+                            {__( 'Data Source', 'sheet-wise' )}
+                        </th>
                     </tr>
-                ) )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {rows.map( (row, index) => (
+                        <tr key={index} className="odd:swise-bg-white even:swise-bg-gray-50">
+                            <td className="swise-px-6 swise-py-4 swise-text-gray-900">
+                                {row}
+                            </td>
+                            <td className="swise-px-6 swise-py-4 swise-text-gray-900">
+                                event code
+                            </td>
+                            <td className="swise-px-6 swise-py-4 swise-text-gray-900">
+                                data source
+                            </td>
+                        </tr>
+                    ) )}
+                    </tbody>
+                </table>
+            }
+            <RowLoading/>
         </div>
     )
 }
