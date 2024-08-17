@@ -5,31 +5,73 @@ import {addQueryArgs} from '@wordpress/url';
 import { __ } from '@wordpress/i18n';
 
 export default function NewIntegration() {
-    const dataSource = [
-        {
+    const dataSource = {
+        'wp-new-user': {
             id: 'wp-new-user',
             name: __( 'Wordpress New User', 'sheet-wise' ),
-            options: [
-                __( 'User ID', 'sheet-wise' ),
-                __( 'User Name', 'sheet-wise' ),
-                __( 'User First Name', 'sheet-wise' ),
-                __( 'User Last Name', 'sheet-wise' ),
-            ]
+            options: [{
+                id: 'user-id', name: __( 'User ID', 'sheet-wise' ),
+            }, {
+                id: 'user-name', name: __( 'User Name', 'sheet-wise' ),
+            }, {
+                id: 'user-first-name', name: __( 'User First Name', 'sheet-wise' ),
+            }, {
+                id: 'user-last-name', name: __( 'User Last Name', 'sheet-wise' ),
+            }, {
+                id: 'user-email', name: __( 'User Email', 'sheet-wise' ),
+            }, {
+                id: 'user-role', name: __( 'User Role', 'sheet-wise' ),
+            }]
         },
-        { id: 'wp-user-profile-update', name: __( 'Wordpress User Profile Update', 'sheet-wise' ) },
-        { id: 'wp-delete-user', name: __( 'Wordpress Delete User', 'sheet-wise' ) },
-        { id: 'wp-user-login', name: __( 'Wordpress User Login', 'sheet-wise' ) },
-        { id: 'wp-user-logout', name: __( 'Wordpress User Logout', 'sheet-wise' ) },
-        { id: 'wp-new-post', name: __( 'Wordpress New Post', 'sheet-wise' ) },
-        { id: 'wp-edit-post', name: __( 'Wordpress Edit Post', 'sheet-wise' ) },
-        { id: 'wp-delete-post', name: __( 'Wordpress Delete Post', 'sheet-wise' ) },
-        { id: 'wp-page', name: __( 'Wordpress Page', 'sheet-wise' ) },
-        { id: 'wp-comment', name: __( 'Wordpress Comment', 'sheet-wise' ) },
-        { id: 'wp-edit-comment', name: __( 'Wordpress Edit Comment', 'sheet-wise' ) },
-    ];
+        'wp-user-profile-update': {
+            id: 'wp-user-profile-update',
+            name: __( 'Wordpress User Profile Update', 'sheet-wise' )
+        },
+        'wp-delete-user': {
+            id: 'wp-delete-user',
+            name: __( 'Wordpress Delete User', 'sheet-wise' )
+        },
+        'wp-user-login': {
+            id: 'wp-user-login',
+            name: __( 'Wordpress User Login', 'sheet-wise' )
+        },
+        'wp-user-logout': {
+            id: 'wp-user-logout',
+            name: __( 'Wordpress User Logout', 'sheet-wise' )
+        },
+        'wp-new-post': {
+            id: 'wp-new-post',
+            name: __( 'Wordpress New Post', 'sheet-wise' )
+        },
+        'wp-edit-post': {
+            id: 'wp-edit-post',
+            name: __( 'Wordpress Edit Post', 'sheet-wise' )
+        },
+        'wp-delete-post': {
+            id: 'wp-delete-post',
+            name: __( 'Wordpress Delete Post', 'sheet-wise' )
+        },
+        'wp-page': {
+            id: 'wp-page',
+            name: __( 'Wordpress Page', 'sheet-wise' )
+        },
+        'wp-comment': {
+            id: 'wp-comment',
+            name: __( 'Wordpress Comment', 'sheet-wise' )
+        },
+        'wp-edit-comment': {
+            id: 'wp-edit-comment',
+            name: __( 'Wordpress Edit Comment', 'sheet-wise' )
+        }
+    };
     const [sheets, setSheets] = useState( [] );
     const [rows, setRows] = useState( [] );
     const [currentSheet, setCurrentSheet] = useState( 'select' );
+    const [currentSource, setCurrentSource] = useState( 'select' );
+    const [currentOption, setCurrentOption] = useState( 'select' );
+    const [eventCode, setEventCode] = useState( '' );
+    const [eventCodeValues, setEventCodeValues] = useState( [] );
+    const [dataSourceValues, setDataSourceValues] = useState([]);
     const [loading, setLoading] = useState(true);
     const [rowLoading, setRowLoading] = useState( false );
     const [error, setError] = useState(null);
@@ -75,7 +117,6 @@ export default function NewIntegration() {
             } )
                 .then( ( response ) => {
                     if (response.success) {
-                        console.log(response.rows);
                         setRows( response.rows );
                     }
                 } )
@@ -102,8 +143,6 @@ export default function NewIntegration() {
             const contentHeight = contentRef.current.offsetHeight + 300;
             const viewportHeight = window.innerHeight;
             setTargetHeight(viewportHeight - contentHeight);
-
-            console.log(contentHeight, viewportHeight, viewportHeight - contentHeight);
         };
 
         handleResize();
@@ -114,8 +153,11 @@ export default function NewIntegration() {
         };
     }, []);
 
+    const sourceOptions = Object.keys( dataSource ).map( function ( key ) {
+        return <option value={key}>{dataSource[key].name}</option>
+    });
 
-    function RowLoading() {
+    const RowLoading = () => {
         if (rowLoading) {
             return (
                 <div
@@ -127,6 +169,21 @@ export default function NewIntegration() {
         }
         return null;
     }
+
+    const handleDataSourceChange = (index, value) => {
+        if ( value === 'select' ) {
+            return;
+        }
+
+        const newDataSourceValues = [...dataSourceValues];
+        const newEventCodeValues = [...eventCodeValues];
+
+        newDataSourceValues[index] = value;
+        newEventCodeValues[index] = eventCodeValues[index] !== undefined ? eventCodeValues[index] + ' [[' + value + ']]' : '[[' + value + ']]';
+
+        setDataSourceValues( newDataSourceValues );
+        setEventCodeValues( newEventCodeValues );
+    };
 
     return (
         <div ref={contentRef}>
@@ -153,9 +210,14 @@ export default function NewIntegration() {
                         <select
                             name="DataSourceID"
                             id="DataSourceID"
+                            onChange={e => setCurrentSource(e.target.value)}
                             className="swise-bg-gray-50 swise-border !swise-border-gray-300 swise-text-gray-900 swise-text-sm swise-rounded-lg focus:swise-ring-blue-500 focus:swise-border-blue-500 swise-block swise-p-2.5 swise-w-full !swise-max-w-full">
-                            <option value="">select ...</option>
-                            {dataSource.map( source => <option  key={source.id} value={source.id}>{ source.name }</option> )}
+                            <option value="select">{__( 'Select...', 'sheet-wise' )}</option>
+                            {
+                                Object.keys( dataSource ).map( ( key ) => {
+                                    return <option key={key} value={key}>{dataSource[key].name}</option>
+                                })
+                            }
                         </select>
                     </td>
                 </tr>
@@ -165,10 +227,11 @@ export default function NewIntegration() {
                         {__( 'Spreadsheet & Worksheet', 'sheet-wise' )}
                     </td>
                     <td className="swise-px-6 swise-py-4">
-                        <select id="spreadsheet"
-                                value={currentSheet}
-                                onChange={e => setCurrentSheet(e.target.value)}
-                                className="swise-bg-gray-50 swise-border !swise-border-gray-300 swise-text-gray-900 swise-text-sm swise-rounded-lg focus:swise-ring-blue-500 focus:swise-border-blue-500 swise-block swise-p-2.5 swise-w-full !swise-max-w-full">
+                        <select
+                            id="spreadsheet"
+                            value={currentSheet}
+                            onChange={e => setCurrentSheet(e.target.value)}
+                            className="swise-bg-gray-50 swise-border !swise-border-gray-300 swise-text-gray-900 swise-text-sm swise-rounded-lg focus:swise-ring-blue-500 focus:swise-border-blue-500 swise-block swise-p-2.5 swise-w-full !swise-max-w-full">
                             <option value='select'>{__( 'Select...', 'sheet-wise' )}</option>
                             {sheets.map( sheet => <option key={sheet.id} value={sheet.id}>{ sheet.name }</option> )}
                         </select>
@@ -200,10 +263,24 @@ export default function NewIntegration() {
                                 {row}
                             </td>
                             <td className="swise-px-6 swise-py-4 swise-text-gray-900">
-                                event code
+                                <input
+                                    id="eventCode"
+                                    key={index}
+                                    type="text"
+                                    placeholder={__( 'Event Code Here', 'sheet-wise' )}
+                                    value={eventCodeValues[index] || ''}
+                                    className="swise-input swise-input-bordered swise-input-sm swise-w-full swise-max-w-xs"/>
                             </td>
                             <td className="swise-px-6 swise-py-4 swise-text-gray-900">
-                                data source
+                                <select
+                                    id="dataSource"
+                                    key={index}
+                                    value={dataSourceValues[index] || ''}
+                                    onChange={(e) => handleDataSourceChange(index, e.target.value)}
+                                    className="swise-bg-gray-50 swise-border !swise-border-gray-300 swise-text-gray-900 swise-text-sm swise-rounded-lg focus:swise-ring-blue-500 focus:swise-border-blue-500 swise-block swise-p-2.5 swise-w-full !swise-max-w-full">
+                                    <option value='select'>{__( 'Select...', 'sheet-wise' )}</option>
+                                    {currentSource !== 'select' && dataSource[currentSource].options.map( source => <option key={source.id} value={source.id}>{ source.name }</option> )}
+                                </select>
                             </td>
                         </tr>
                     ) )}

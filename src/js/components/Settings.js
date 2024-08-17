@@ -100,8 +100,6 @@ export default function Settings() {
         } )
             .then( ( response ) => response.json() )
             .then( ( data ) => {
-                console.log(data);
-                console.log(typeof data.code);
                 if (data.code === 200) {
                     setCredentialJson( data.credential );
                 }
