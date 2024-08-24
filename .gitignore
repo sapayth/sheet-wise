@@ -8,6 +8,9 @@ includes/.DS_Store
 package-lock.json
 config.json
 
+/assets/js/**.hot-update.js
+/assets/js/**.hot-update.json
+
 # Composer
 /vendor/
 phpcs-report.txt

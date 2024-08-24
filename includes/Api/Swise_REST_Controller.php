@@ -2,7 +2,7 @@
 
 namespace SheetWise\Api;
 
-class Swise_API extends \WP_REST_Controller {
+class Swise_REST_Controller extends \WP_REST_Controller {
 	/**
 	 * The namespace of this controller's route.
 	 *

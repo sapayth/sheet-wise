@@ -87,6 +87,16 @@ class GoogleSheet {
 		return $list;
 	}
 
+	/**
+	 * Get the rows of a spreadsheet
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param string $spreadsheet_id
+	 * @param string $range
+	 *
+	 * @return array
+	 */
 	public function get_rows( $spreadsheet_id, $range = '1:1' ) {
 		$client = $this->get_client();
 
@@ -104,6 +114,8 @@ class GoogleSheet {
 
 		$values = $response->getValues();
 
-		return isset( $values[0] ) && is_array( $values[0] ) ? $values[0] : [];
+		$value_arr = isset( $values[0] ) && is_array( $values[0] ) ? apply_filters( 'swise_spreadsheet_rows', $values[0], $spreadsheet_id ) : [];
+
+		return $value_arr;
 	}
 }

@@ -946,6 +946,38 @@ html {
   outline-offset: 2px;
   outline-color: var(--fallback-bc,oklch(var(--bc)/0.2));
 }
+.swise-input-error {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+}
+.\!swise-input-error {
+  --tw-border-opacity: 1 !important;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity))) !important;
+}
+.swise-input-error:focus,
+    .swise-input-error:focus-within {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  outline-color: var(--fallback-er,oklch(var(--er)/1));
+}
+.\!swise-input-error:focus,
+    .\!swise-input-error:focus-within {
+  --tw-border-opacity: 1 !important;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity))) !important;
+  outline-color: var(--fallback-er,oklch(var(--er)/1)) !important;
+}
+.swise-input-error:focus,
+    .swise-input-error:focus-within {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  outline-color: var(--fallback-er,oklch(var(--er)/1));
+}
+.\!swise-input-error:focus,
+    .\!swise-input-error:focus-within {
+  --tw-border-opacity: 1 !important;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity))) !important;
+  outline-color: var(--fallback-er,oklch(var(--er)/1)) !important;
+}
 .swise-input:has(> input[disabled]),
   .swise-input-disabled,
   .swise-input:disabled,
@@ -1082,6 +1114,15 @@ html {
     transform: translateY(0);
   }
 }
+.\!swise-select-error {
+  --tw-border-opacity: 1 !important;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity))) !important;
+}
+.\!swise-select-error:focus {
+  --tw-border-opacity: 1 !important;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity))) !important;
+  outline-color: var(--fallback-er,oklch(var(--er)/1)) !important;
+}
 @keyframes skeleton {
 
   from {
@@ -1163,6 +1204,9 @@ html {
 .swise-mt-8 {
   margin-top: 2rem;
 }
+.swise-mt-4 {
+  margin-top: 1rem;
+}
 .swise-block {
   display: block;
 }
@@ -1233,6 +1277,9 @@ html {
 .swise-rounded-lg {
   border-radius: 0.5rem;
 }
+.swise-rounded-md {
+  border-radius: 0.375rem;
+}
 .swise-rounded-t-lg {
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
@@ -1277,6 +1324,10 @@ html {
 .swise-bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+.swise-bg-indigo-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(79 70 229 / var(--tw-bg-opacity));
 }
 .swise-p-2 {
   padding: 0.5rem;
@@ -1409,6 +1460,14 @@ html {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
+.swise-text-red-900 {
+  --tw-text-opacity: 1;
+  color: rgb(127 29 29 / var(--tw-text-opacity));
+}
+.\!swise-text-red-900 {
+  --tw-text-opacity: 1 !important;
+  color: rgb(127 29 29 / var(--tw-text-opacity)) !important;
+}
 .swise-shadow {
   --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
@@ -1417,6 +1476,11 @@ html {
 .swise-shadow-md {
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.swise-shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .swise-ring-1 {
@@ -1446,6 +1510,10 @@ html {
 .hover\:swise-bg-slate-800:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+}
+.hover\:swise-bg-indigo-500:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(99 102 241 / var(--tw-bg-opacity));
 }
 .hover\:swise-text-gray-600:hover {
   --tw-text-opacity: 1;

@@ -4,7 +4,7 @@ import Navigation from './Navigation';
 import { __ } from '@wordpress/i18n';
 import DynamicComponent from './DynamicComponent';
 
-export default function Settings() {
+export default function Dashboard() {
     const [activeComponent, setActiveComponent] = useState('ListTable');
 
     return (
@@ -19,7 +19,7 @@ export default function Settings() {
                     className="page-title-action">
                     {activeComponent === 'ListTable' ? __( 'Add New', 'swise' ) : __( 'Back', 'swise' )}
                 </button>
-                <DynamicComponent is={activeComponent} />
+                <DynamicComponent is={activeComponent} setActiveComponent={setActiveComponent} />
             </div>
         </>
     )

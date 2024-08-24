@@ -84,3 +84,14 @@ function swise_remove_admin_notices() {
 function swise_rest_url() {
 	return rest_url( 'swise/v1' );
 }
+
+/**
+ * Get the Sheet-Wise post type
+ *
+ * @since 1.0.0
+ *
+ * @return string
+ */
+function swise_get_post_types() {
+	return 'swise_integration';
+}

@@ -5,7 +5,7 @@ namespace SheetWise\Api;
 use SheetWise\Traits\RestResponseError;
 use WP_REST_Server;
 
-class Settings extends Swise_API {
+class Settings extends Swise_REST_Controller {
 
 	use RestResponseError;
 

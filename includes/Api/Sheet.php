@@ -5,7 +5,7 @@ namespace SheetWise\Api;
 use SheetWise\Admin\GoogleSheet;
 use WP_REST_Server;
 
-class Sheet extends Swise_API {
+class Sheet extends Swise_REST_Controller {
 	/**
 	 * Route name
 	 *
