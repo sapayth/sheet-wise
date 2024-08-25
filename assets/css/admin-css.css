@@ -1225,6 +1225,12 @@ html {
 .swise-h-screen {
   height: 100vh;
 }
+.swise-h-\[calc\(100vh-50px\)\] {
+  height: calc(100vh - 50px);
+}
+.swise-h-\[calc\(100vh-200px\)\] {
+  height: calc(100vh - 200px);
+}
 .swise-w-full {
   width: 100%;
 }
@@ -1467,6 +1473,14 @@ html {
 .\!swise-text-red-900 {
   --tw-text-opacity: 1 !important;
   color: rgb(127 29 29 / var(--tw-text-opacity)) !important;
+}
+.swise-text-primary {
+  --tw-text-opacity: 1;
+  color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity)));
+}
+.swise-text-purple-700 {
+  --tw-text-opacity: 1;
+  color: rgb(126 34 206 / var(--tw-text-opacity));
 }
 .swise-shadow {
   --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
