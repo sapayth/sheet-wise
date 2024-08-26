@@ -1,16 +1,47 @@
 import React from 'react';
+import {__} from '@wordpress/i18n';
+import dashboard from '../routes/dashboard';
+import {useLocation, useNavigate} from 'react-router-dom';
 
-export default function Navigation( {version} ) {
+export default function Navigation() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { pathname } = location;
+
+    const navigationButton = () => {
+        if ( pathname === dashboard.sheets.create ) {
+            return (
+                <button
+                    onClick={() => navigate( dashboard.home )}
+                    className="page-title-action">
+                    {__( 'Back to List', 'swise' )}
+                </button>
+            );
+        }
+
+        return (
+            <button
+                onClick={() => navigate( dashboard.sheets.create )}
+                className="page-title-action">
+                {__( 'Add New', 'swise' )}
+            </button>
+        );
+    }
+
+    const title = () => {
+        if ( pathname === dashboard.sheets.create ) {
+            return __( 'Add New Integration', 'swise' );
+        }
+
+        return __( 'Integrations', 'swise' );
+    }
 
     return (
-        <div className="swise-nav-toolbar swise-bg-slate-700 swise-text-slate-100 swise-flex swise--ml-[20px]">
-            <div className="swise-m-6">
-                <h2 className="swise-text-2xl swise-leading-none swise-m-0 swise-text-slate-100">
-                    Sheet Wise
-                    <span
-                        className="swise-ml-4 swise-bg-gray-100 swise-text-slate-700 swise-text-xs swise-font-medium me-2 swise-px-2.5 swise-py-0.5 swise-rounded-full">{version}</span>
-                </h2>
-            </div>
+        <div className="swise-mb-4">
+            <h1 className="wp-heading-inline">
+                {title()}
+            </h1>
+            {navigationButton()}
         </div>
     );
 }

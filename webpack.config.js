@@ -7,7 +7,6 @@ const entryPoints = {
     'settings-css': './src/css/settings.css',
     'admin-css': './src/css/admin.css',
     'settings-js': './src/js/settings.js',
-    'admin-js': './src/js/admin.js',
     'dashboard-js': './src/js/dashboard.js',
 };
 

@@ -5,7 +5,7 @@ import {
     CardBody,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import Navigation from './Navigation';
+import Header from './Header';
 
 export default function Settings() {
     const [isLoading, setIsLoading] = useState( false );
@@ -122,7 +122,7 @@ export default function Settings() {
 
     return (
         <>
-            <Navigation version={swiseSettings.version} />
+            <Header version={swiseSettings.version} />
             <div className="swise-border-b swise-border-gray-200 dark:swise-border-gray-700">
                 <ul className="swise-flex swise-flex-wrap swise--mb-px swise-text-sm swise-font-medium swise-text-gray-500 dark:swise-text-gray-400">
                     <li className="me-2">

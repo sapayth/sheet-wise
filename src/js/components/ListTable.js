@@ -1,7 +1,8 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import apiFetch from '@wordpress/api-fetch';
 import {addQueryArgs} from '@wordpress/url';
 import {__} from '@wordpress/i18n';
+import Navigation from './Navigation';
 
 export default function ListTable() {
     const [sheets, setSheets] = useState( [] );
@@ -37,7 +38,8 @@ export default function ListTable() {
     };
 
     return (
-        <div className="swise-mt-8 swise-flow-root">
+        <div className="swise-flow-root">
+            <Navigation />
             <div className="swise--mx-4 swise--my-2 swise-overflow-x-auto sm:swise--mx-6 lg:swise--mx-8">
                 {loading &&
                     <div className="swise-h-[calc(100vh-200px)] swise-flex swise-items-center swise-justify-center">

@@ -1,5 +1,5 @@
 {
-  "name": "my-react-plugin",
+  "name": "sheet-wise",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@wordpress/api-fetch": "^7.4.0",
-    "@wordpress/components": "^25.8.0"
+    "@wordpress/components": "^25.8.0",
+    "react-router-dom": "^6.26.1"
   }
 }

@@ -1,25 +1,27 @@
 import React, {Fragment, useState} from 'react';
 
-import Navigation from './Navigation';
-import { __ } from '@wordpress/i18n';
-import DynamicComponent from './DynamicComponent';
+import Header from './Header';
+import {__} from '@wordpress/i18n';
+import {HashRouter, Routes, Route} from 'react-router-dom';
+import dashboard from '../routes/dashboard';
+import NewIntegration from './NewIntegration';
+import ListTable from './ListTable';
 
 export default function Dashboard() {
-    const [activeComponent, setActiveComponent] = useState('ListTable');
+    const [activeComponent, setActiveComponent] = useState( 'ListTable' );
 
     return (
         <>
-            <Navigation version={swiseDashboard.version}/>
+            <Header version={swiseDashboard.version}/>
             <div className="wrap">
-                <h1 className="wp-heading-inline">
-                    {activeComponent === 'ListTable' ? __( 'Integrations', 'swise' ) : __( 'Add New', 'swise' )}
-                </h1>
-                <button
-                    onClick={() => setActiveComponent( activeComponent === 'ListTable' ? 'NewIntegration' : 'ListTable' )}
-                    className="page-title-action">
-                    {activeComponent === 'ListTable' ? __( 'Add New', 'swise' ) : __( 'Back', 'swise' )}
-                </button>
-                <DynamicComponent is={activeComponent} setActiveComponent={setActiveComponent} />
+                <HashRouter>
+                    <Routes>
+                        <Route path={dashboard.home} element={<ListTable/>}/>
+                        <Route
+                            path={dashboard.sheets.create}
+                            element={<NewIntegration setActiveComponent={setActiveComponent}/>}/>
+                    </Routes>
+                </HashRouter>
             </div>
         </>
     )

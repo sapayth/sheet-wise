@@ -5,7 +5,6 @@ namespace SheetWise\Admin;
 use Google\Client;
 use Google\Service\Drive;
 use Google\Service\Sheets;
-use Google_Service_Drive;
 
 class GoogleSheet {
 	/**
