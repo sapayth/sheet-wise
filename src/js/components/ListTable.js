@@ -37,6 +37,31 @@ export default function ListTable() {
             } );
     };
 
+    const handleDelete = async (event) => {
+        if (!confirm( __( 'Are you sure you want to delete this integration?', 'sheet-wise' ) )) {
+            return;
+        }
+
+        const integrationId = event.target.closest('tr').querySelector('td:nth-child(2)').textContent;
+        let path = '/wp-json/swise/v1/integrations/' + integrationId;
+
+        await apiFetch( {
+            path: addQueryArgs( path ),
+            method: 'DELETE',
+            headers: {
+                'X-WP-Nonce': swiseDashboard.nonce,
+            },
+        } )
+        .then( ( response ) => {
+            if (response.success) {
+                fetchIntegrations();
+            }
+        } )
+        .catch( ( error ) => {
+            console.log( error );
+        } );
+    }
+
     return (
         <div className="swise-flow-root">
             <Navigation />
@@ -67,6 +92,7 @@ export default function ListTable() {
                                         className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
                                         {__( 'Edit', 'sheet-wise' )}
                                     </th>
+                                    <th scope="col"></th>
                                 </tr>
                                 </thead>
                                 <tbody className="swise-divide-y swise-divide-gray-200 swise-bg-white">
@@ -77,8 +103,16 @@ export default function ListTable() {
                                             <td className="swise-whitespace-nowrap swise-px-3 swise-py-4 swise-text-sm swise-text-gray-500">{integration.id}</td>
                                             <td className="swise-whitespace-nowrap swise-px-3 swise-py-4 swise-text-sm swise-text-gray-500">
                                                 <a href={swiseDashboard.pageURL + '#/integration/' + integration.id}
-                                                   className="swise-text-indigo-600 hover:swise-text-indigo-900">{__( 'Edit', 'integration-wise' )}<span
-                                                    className="swise-sr-only">, {integration.name}</span></a>
+                                                   className="swise-text-indigo-600 hover:swise-text-indigo-900">{__( 'Edit', 'integration-wise' )}
+                                                    <span
+                                                    className="swise-sr-only">, {integration.title}</span></a>
+                                            </td>
+                                            <td className="swise-whitespace-nowrap swise-px-3 swise-py-4 swise-text-sm swise-text-gray-500">
+                                                <button
+                                                    className="swise-text-red-600 hover:swise-text-red-900"
+                                                    onClick={handleDelete}>
+                                                    {__( 'Delete', 'integration-wise' )}
+                                                </button>
                                             </td>
                                         </tr>
                                     );

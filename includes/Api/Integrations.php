@@ -74,6 +74,46 @@ class Integrations extends Swise_REST_Controller {
 				'schema' => [ $this, 'get_public_item_schema' ],
 			]
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->base . '/(?P<id>[\d]+)',
+			[
+				[
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => [ $this, 'delete_item' ],
+					'permission_callback' => [ $this, 'permission_check' ],
+				],
+				'schema' => [ $this, 'get_public_item_schema' ],
+			]
+		);
+	}
+
+	/**
+	 * Delete an integration
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function delete_item( $request ) {
+		$integration_id = $request->get_param( 'id' );
+
+		$deleted = wp_delete_post( $integration_id );
+
+		if ( ! $deleted ) {
+			return $this->error_response( new \WP_Error( 'invalid_id', 'Invalid ID' ) );
+		}
+
+		return rest_ensure_response(
+			[
+				'code'    => 200,
+				'success' => true,
+				'message' => __( 'Integration deleted successfully', 'sheet-wise' ),
+			]
+		);
 	}
 
 	/**
