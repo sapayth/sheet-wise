@@ -9,7 +9,7 @@ export default function Navigation() {
     const { pathname } = location;
 
     const navigationButton = () => {
-        if ( pathname === dashboard.sheets.create ) {
+        if ( pathname === dashboard.integrations.create ) {
             return (
                 <button
                     onClick={() => navigate( dashboard.home )}
@@ -21,7 +21,7 @@ export default function Navigation() {
 
         return (
             <button
-                onClick={() => navigate( dashboard.sheets.create )}
+                onClick={() => navigate( dashboard.integrations.create )}
                 className="page-title-action">
                 {__( 'Add New', 'swise' )}
             </button>
@@ -29,7 +29,7 @@ export default function Navigation() {
     }
 
     const title = () => {
-        if ( pathname === dashboard.sheets.create ) {
+        if ( pathname === dashboard.integrations.create ) {
             return __( 'Add New Integration', 'swise' );
         }
 

@@ -1141,9 +1141,6 @@ html {
   white-space: nowrap;
   border-width: 0;
 }
-.swise-relative {
-  position: relative;
-}
 .swise-m-0 {
   margin: 0px;
 }
@@ -1167,6 +1164,9 @@ html {
 .swise-mb-2 {
   margin-bottom: 0.5rem;
 }
+.swise-mb-4 {
+  margin-bottom: 1rem;
+}
 .swise-ml-4 {
   margin-left: 1rem;
 }
@@ -1184,12 +1184,6 @@ html {
 }
 .swise-mt-8 {
   margin-top: 2rem;
-}
-.swise-mb-8 {
-  margin-bottom: 2rem;
-}
-.swise-mb-4 {
-  margin-bottom: 1rem;
 }
 .swise-block {
   display: block;
@@ -1373,23 +1367,14 @@ html {
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
-.swise-pl-3 {
-  padding-left: 0.75rem;
-}
 .swise-pl-4 {
   padding-left: 1rem;
 }
 .swise-pr-3 {
   padding-right: 0.75rem;
 }
-.swise-pr-4 {
-  padding-right: 1rem;
-}
 .swise-text-left {
   text-align: left;
-}
-.swise-text-right {
-  text-align: right;
 }
 .swise-align-middle {
   vertical-align: middle;
@@ -1628,10 +1613,6 @@ html {
 
   .sm\:swise-pl-6 {
     padding-left: 1.5rem;
-  }
-
-  .sm\:swise-pr-6 {
-    padding-right: 1.5rem;
   }
 }
 @media (min-width: 1024px) {

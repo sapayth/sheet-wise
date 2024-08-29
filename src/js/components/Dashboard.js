@@ -6,6 +6,7 @@ import {HashRouter, Routes, Route} from 'react-router-dom';
 import dashboard from '../routes/dashboard';
 import NewIntegration from './NewIntegration';
 import ListTable from './ListTable';
+import EditIntegration from './EditIntegration';
 
 export default function Dashboard() {
     const [activeComponent, setActiveComponent] = useState( 'ListTable' );
@@ -18,8 +19,11 @@ export default function Dashboard() {
                     <Routes>
                         <Route path={dashboard.home} element={<ListTable/>}/>
                         <Route
-                            path={dashboard.sheets.create}
+                            path={dashboard.integrations.create}
                             element={<NewIntegration setActiveComponent={setActiveComponent}/>}/>
+                        <Route
+                            path={dashboard.integrations.edit}
+                            element={<EditIntegration />}/>
                     </Routes>
                 </HashRouter>
             </div>

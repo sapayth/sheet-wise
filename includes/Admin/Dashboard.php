@@ -26,6 +26,7 @@ class Dashboard {
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 				'version' => SWISE_VERSION,
 				'restURL' => rest_url( 'swise/v1' ),
+				'pageURL' => admin_url( 'admin.php?page=sheet-wise' ),
 			]
 		);
 	}

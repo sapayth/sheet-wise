@@ -1,9 +1,9 @@
 const dashboard = {
     home: '/',
-    sheets: {
+    integrations: {
         home: '/list',
-        create: '/sheet/create',
-        edit: '/sheet/:id',
+        create: '/integration/create',
+        edit: '/integration/:id',
     },
 };
 

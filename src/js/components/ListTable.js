@@ -5,17 +5,17 @@ import {__} from '@wordpress/i18n';
 import Navigation from './Navigation';
 
 export default function ListTable() {
-    const [sheets, setSheets] = useState( [] );
+    const [integrations, setIntegrations] = useState( [] );
     const [loading, setLoading] = useState( true );
 
     const googleSheetLink = 'https://docs.google.com/spreadsheets/d/';
 
     useEffect( () => {
-        fetchSheets();
+        fetchIntegrations();
     }, [] );
 
-    const fetchSheets = async () => {
-        let path = '/wp-json/swise/v1/sheets';
+    const fetchIntegrations = async () => {
+        let path = '/wp-json/swise/v1/integrations';
 
         apiFetch( {
             path: addQueryArgs( path ),
@@ -26,7 +26,7 @@ export default function ListTable() {
         } )
             .then( ( response ) => {
                 if (response.success) {
-                    setSheets( response.files );
+                    setIntegrations( response.files );
                 }
             } )
             .catch( ( error ) => {
@@ -65,27 +65,20 @@ export default function ListTable() {
                                     </th>
                                     <th scope="col"
                                         className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
-                                        {__( 'Link', 'sheet-wise' )}
-                                    </th>
-                                    <th scope="col"
-                                        className="swise-relative swise-py-3.5 swise-pl-3 swise-pr-4 sm:swise-pr-6">
-                                        <span className="swise-sr-only">Edit</span>
+                                        {__( 'Edit', 'sheet-wise' )}
                                     </th>
                                 </tr>
                                 </thead>
                                 <tbody className="swise-divide-y swise-divide-gray-200 swise-bg-white">
-                                {sheets.map( sheet => {
+                                {integrations.map( integration => {
                                     return (
-                                        <tr key={sheet.id}>
-                                            <td className="swise-whitespace-nowrap swise-py-4 swise-pl-4 swise-pr-3 swise-text-sm swise-font-medium swise-text-gray-900 sm:swise-pl-6">{sheet.name}</td>
-                                            <td className="swise-whitespace-nowrap swise-px-3 swise-py-4 swise-text-sm swise-text-gray-500">{sheet.id}</td>
+                                        <tr key={integration.id}>
+                                            <td className="swise-whitespace-nowrap swise-py-4 swise-pl-4 swise-pr-3 swise-text-sm swise-font-medium swise-text-gray-900 sm:swise-pl-6">{integration.title}</td>
+                                            <td className="swise-whitespace-nowrap swise-px-3 swise-py-4 swise-text-sm swise-text-gray-500">{integration.id}</td>
                                             <td className="swise-whitespace-nowrap swise-px-3 swise-py-4 swise-text-sm swise-text-gray-500">
-                                                <a href={googleSheetLink + sheet.id} target="_blank"><span
-                                                    className="dashicons dashicons-admin-links"></span></a></td>
-                                            <td className="swise-relative swise-whitespace-nowrap swise-py-4 swise-pl-3 swise-pr-4 swise-text-right swise-text-sm swise-font-medium sm:swise-pr-6">
-                                                <a href="#"
-                                                   className="swise-text-indigo-600 hover:swise-text-indigo-900">Edit<span
-                                                    className="swise-sr-only">, {sheet.name}</span></a>
+                                                <a href={swiseDashboard.pageURL + '#/integration/' + integration.id}
+                                                   className="swise-text-indigo-600 hover:swise-text-indigo-900">{__( 'Edit', 'integration-wise' )}<span
+                                                    className="swise-sr-only">, {integration.name}</span></a>
                                             </td>
                                         </tr>
                                     );
