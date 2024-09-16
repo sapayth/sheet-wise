@@ -5,7 +5,25 @@
     "license": "GPL v2",
     "autoload": {
         "psr-4": {
-            "SheetWise\\": "includes/"
+            "SheetWise\\": "includes/",
+            "SheetWise\\Scoped\\": "scoped/",
+            "SheetWise\\Scoped\\Google\\": "scoped/google/apiclient/src",
+            "SheetWise\\Scoped\\Google\\Auth\\": "scoped/google/auth/src",
+            "SheetWise\\Scoped\\Google\\Service\\": "scoped/google/apiclient-services/src",
+            "SheetWise\\Scoped\\Google\\Service\\Drive\\": "scoped/google/apiclient-services/src/Drive",
+            "SheetWise\\Scoped\\Google\\Service\\Sheets\\": "scoped/google/apiclient-services/src/Sheets",
+            "SheetWise\\Scoped\\Firebase\\JWT\\": "scoped/firebase/php-jwt/src",
+            "SheetWise\\Scoped\\GuzzleHttp\\": "scoped/guzzlehttp/guzzle/src",
+            "SheetWise\\Scoped\\GuzzleHttp\\Promise\\": "scoped/guzzlehttp/promises/src",
+            "SheetWise\\Scoped\\GuzzleHttp\\Psr7\\": "scoped/guzzlehttp/psr7/src",
+            "SheetWise\\Scoped\\Monolog\\": "scoped/monolog/monolog/src/Monolog",
+            "SheetWise\\Scoped\\Psr\\Cache\\": "scoped/psr/cache/src",
+            "SheetWise\\Scoped\\Psr\\Container\\": "scoped/psr/container/src",
+            "SheetWise\\Scoped\\Psr\\EventDispatcher\\": "scoped/psr/event-dispatcher/src",
+            "SheetWise\\Scoped\\Psr\\Http\\Client\\": "scoped/psr/http-client/src",
+            "SheetWise\\Scoped\\Psr\\Http\\Factory\\": "scoped/psr/http-factory/src",
+            "SheetWise\\Scoped\\Psr\\Http\\Message\\": "scoped/psr/http-message/src",
+            "SheetWise\\Scoped\\Psr\\Log\\": "scoped/psr/log/src"
         }
     },
     "authors": [
@@ -16,21 +34,30 @@
     "minimum-stability": "dev",
     "config": {
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "cweagans/composer-patches": true
         }
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "0.7.0",
         "wp-coding-standards/wpcs": "dev-develop",
         "phpcompatibility/phpcompatibility-wp": "dev-master",
-        "phpstan/phpstan": "2.0.x-dev"
+        "humbug/php-scoper": "dev-main"
     },
     "require": {
         "wedevs/wp-utils": "dev-main",
-        "google/apiclient": "^2.15.0"
+        "google/apiclient": "^2.15.0",
+        "woocommerce/action-scheduler": "^3.4.2",
+        "deliciousbrains/wp-background-processing": "dev-master"
     },
     "scripts": {
-        "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
+        "pre-autoload-dump": "Google\\Task\\Composer::cleanup",
+        "post-install-cmd": [
+            "php-scoper add-prefix --config=scoper.inc.php"
+        ],
+        "post-update-cmd": [
+            "php-scoper add-prefix --config=scoper.inc.php"
+        ]
     },
     "extra": {
         "google/apiclient-services": [

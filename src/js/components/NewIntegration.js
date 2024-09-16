@@ -6,65 +6,7 @@ import {__} from '@wordpress/i18n';
 import Navigation from './Navigation';
 
 export default function NewIntegration( {setActiveComponent} ) {
-    const dataSource = {
-        'wp-new-user': {
-            id: 'wp-new-user',
-            name: __( 'Wordpress New User', 'sheet-wise' ),
-            options: [{
-                id: 'user-id', name: __( 'User ID', 'sheet-wise' ),
-            }, {
-                id: 'user-name', name: __( 'User Name', 'sheet-wise' ),
-            }, {
-                id: 'user-first-name', name: __( 'User First Name', 'sheet-wise' ),
-            }, {
-                id: 'user-last-name', name: __( 'User Last Name', 'sheet-wise' ),
-            }, {
-                id: 'user-email', name: __( 'User Email', 'sheet-wise' ),
-            }, {
-                id: 'user-role', name: __( 'User Role', 'sheet-wise' ),
-            }]
-        },
-        'wp-user-profile-update': {
-            id: 'wp-user-profile-update',
-            name: __( 'Wordpress User Profile Update', 'sheet-wise' )
-        },
-        'wp-delete-user': {
-            id: 'wp-delete-user',
-            name: __( 'Wordpress Delete User', 'sheet-wise' )
-        },
-        'wp-user-login': {
-            id: 'wp-user-login',
-            name: __( 'Wordpress User Login', 'sheet-wise' )
-        },
-        'wp-user-logout': {
-            id: 'wp-user-logout',
-            name: __( 'Wordpress User Logout', 'sheet-wise' )
-        },
-        'wp-new-post': {
-            id: 'wp-new-post',
-            name: __( 'Wordpress New Post', 'sheet-wise' )
-        },
-        'wp-edit-post': {
-            id: 'wp-edit-post',
-            name: __( 'Wordpress Edit Post', 'sheet-wise' )
-        },
-        'wp-delete-post': {
-            id: 'wp-delete-post',
-            name: __( 'Wordpress Delete Post', 'sheet-wise' )
-        },
-        'wp-page': {
-            id: 'wp-page',
-            name: __( 'Wordpress Page', 'sheet-wise' )
-        },
-        'wp-comment': {
-            id: 'wp-comment',
-            name: __( 'Wordpress Comment', 'sheet-wise' )
-        },
-        'wp-edit-comment': {
-            id: 'wp-edit-comment',
-            name: __( 'Wordpress Edit Comment', 'sheet-wise' )
-        }
-    };
+    const dataSource = swiseDashboard.dataSources;
     const [sheets, setSheets] = useState( [] );
     const [rows, setRows] = useState( [] );
     const [currentSheet, setCurrentSheet] = useState( 'select' );
@@ -154,9 +96,9 @@ export default function NewIntegration( {setActiveComponent} ) {
         };
     }, [] );
 
-    const sourceOptions = Object.keys( dataSource ).map( function ( key ) {
+    /*const sourceOptions = Object.keys( dataSource ).map( function ( key ) {
         return <option value={key}>{dataSource[key].name}</option>
-    } );
+    } );*/
 
     const RowLoading = () => {
         if (rowLoading) {
@@ -294,7 +236,7 @@ export default function NewIntegration( {setActiveComponent} ) {
                                 <option value="select">{__( 'Select...', 'sheet-wise' )}</option>
                                 {
                                     Object.keys( dataSource ).map( ( key ) => {
-                                        return <option key={key} value={key}>{dataSource[key].name}</option>
+                                        return <option key={key} value={key}>{dataSource[key]}</option>
                                     } )
                                 }
                             </select>
@@ -346,7 +288,7 @@ export default function NewIntegration( {setActiveComponent} ) {
                                     {__( 'Event Code', 'sheet-wise' )}
                                 </th>
                                 <th className="swise-px-6 swise-py-4 swise-font-medium swise-text-gray-900">
-                                    {__( 'Data Source', 'sheet-wise' )}
+                                    {__( 'Data Source Event Name', 'sheet-wise' )}
                                 </th>
                             </tr>
                             </thead>
@@ -378,8 +320,12 @@ export default function NewIntegration( {setActiveComponent} ) {
                                             onChange={( e ) => handleDataSourceChange( index, e.target.value )}
                                             className="swise-bg-gray-50 swise-border !swise-border-gray-300 swise-text-gray-900 swise-text-sm swise-rounded-lg focus:swise-ring-blue-500 focus:swise-border-blue-500 swise-block swise-p-2.5 swise-w-full !swise-max-w-full">
                                             <option value="select">{__( 'Select...', 'sheet-wise' )}</option>
-                                            {currentSource !== 'select' && dataSource[currentSource].options.map( source =>
-                                                <option key={source.id} value={source.id}>{source.name}</option> )}
+                                            {
+                                                currentSource !== 'select' && swiseDashboard.dataEvents[currentSource] &&
+                                                Object.keys( swiseDashboard.dataEvents[currentSource] ).map( ( key ) => {
+                                                    return <option key={key} value={key}>{swiseDashboard.dataEvents[currentSource][key].label}</option>
+                                                } )
+                                            }
                                         </select>
                                     </td>
                                 </tr>

@@ -23,10 +23,12 @@ class Dashboard {
 			'swise-dashboard',
 			'swiseDashboard',
 			[
-				'nonce'   => wp_create_nonce( 'wp_rest' ),
-				'version' => SWISE_VERSION,
-				'restURL' => rest_url( 'swise/v1' ),
-				'pageURL' => admin_url( 'admin.php?page=sheet-wise' ),
+				'nonce'       => wp_create_nonce( 'wp_rest' ),
+				'version'     => SWISE_VERSION,
+				'restURL'     => rest_url( 'swise/v1' ),
+				'pageURL'     => admin_url( 'admin.php?page=sheet-wise' ),
+				'dataSources' => swise_get_data_sources(),
+				'dataEvents'  => get_data_source_events(),
 			]
 		);
 	}

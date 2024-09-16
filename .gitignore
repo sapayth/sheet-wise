@@ -13,6 +13,7 @@ config.json
 
 # Composer
 /vendor/
+/scoped/
 phpcs-report.txt
 /phpcs.xml
 .phpunit.result.cache

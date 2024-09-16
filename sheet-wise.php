@@ -88,6 +88,21 @@ final class SheetWise {
 	 */
 	public function init_hooks() {
 		add_action( 'plugins_loaded', [ $this, 'instantiate' ] );
+		add_action( 'swise_loaded', [ $this, 'include_action_scheduler' ] );
+	}
+
+	/**
+	 * Include the action scheduler
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function include_action_scheduler() {
+		swise_require_file( SWISE_ROOT . '/vendor/woocommerce/action-scheduler/action-scheduler.php' );
+		swise_require_file(
+			SWISE_ROOT . '/vendor/deliciousbrains/wp-background-processing/wp-background-processing.php'
+		);
 	}
 
 	/**
@@ -100,6 +115,7 @@ final class SheetWise {
 	public function instantiate() {
 		$this->assets = new SheetWise\Assets();
 		$this->api    = new SheetWise\Api();
+		$this->hooks  = new SheetWise\Hooks();
 
 		if ( is_admin() ) {
 			$this->admin = new SheetWise\Admin();

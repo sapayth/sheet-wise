@@ -136,9 +136,16 @@ class Integrations extends Swise_REST_Controller {
 		$sanitized_data_sources = [];
 
 		$title        = $integration->title ? sanitize_text_field( $integration->title ) : '';
+		$source       = $integration->source ? sanitize_text_field( $integration->source ) : '';
+		$data_sources = is_array( $integration->data_sources ) ? $integration->data_sources : [];
 		$rows         = is_array( $integration->rows ) ? $integration->rows : [];
 		$event_codes  = is_array( $integration->event_codes ) ? $integration->event_codes : [];
-		$data_sources = is_array( $integration->data_sources ) ? $integration->data_sources : [];
+
+		$default_sources = swise_get_data_sources();
+
+		if ( ! array_key_exists( $source, $default_sources ) ) {
+			return $this->error_response( new \WP_Error( 'invalid_source', 'Invalid source' ) );
+		}
 
 		foreach ( $rows as $row ) {
 			$sanitized_rows[] = sanitize_text_field( $row );
@@ -161,7 +168,7 @@ class Integrations extends Swise_REST_Controller {
 				'post_name'    => 'swise-' . sanitize_title( $title ),
 				'post_title'   => $title,
 				'post_content' => wp_json_encode( $integration ),
-				'post_type'    => swise_get_post_types(),
+				'post_type'    => swise_get_post_type(),
 				'post_status'  => 'publish',
 				'ID'           => $integration->id,
 			]
@@ -170,6 +177,22 @@ class Integrations extends Swise_REST_Controller {
 		if ( is_wp_error( $integration_id ) ) {
 			return $this->error_response( $integration_id );
 		}
+
+		update_post_meta( $integration_id, swise_get_hook_meta_key(), $source );
+
+		// define hook name beforehand
+//		$creation_hook = 'sheetwise_sc_integration_update';
+//
+//		if ( false === as_next_scheduled_action( $creation_hook ) ) {
+//			// enqueue the action
+//			as_enqueue_async_action(
+//				$creation_hook,
+//				[
+//					'hook'           => $integration->source,
+//					'integration_id' => $integration_id,
+//				]
+//			);
+//		}
 
 		return rest_ensure_response(
 			[
@@ -225,7 +248,7 @@ class Integrations extends Swise_REST_Controller {
 				'post_name'    => 'swise-' . sanitize_title( $title ),
 				'post_title'   => $title,
 				'post_content' => wp_json_encode( $integration ),
-				'post_type'    => swise_get_post_types(),
+				'post_type'    => swise_get_post_type(),
 				'post_status'  => 'publish',
 			]
 		);
@@ -255,7 +278,7 @@ class Integrations extends Swise_REST_Controller {
 	public function get_items( $request ) {
 		$integrations = get_posts(
 			[
-				'post_type'      => swise_get_post_types(),
+				'post_type'      => swise_get_post_type(),
 				'posts_per_page' => -1,
 			]
 		);
