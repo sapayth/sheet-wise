@@ -8,6 +8,69 @@ use SheetWise\Scoped\Google\Service\Sheets;
 
 class GoogleSheet {
 	/**
+	 * The sheet id
+	 *
+	 * @since 1.1.1
+	 *
+	 * @var string
+	 */
+	protected $sheet_id = null;
+
+	/**
+	 * The sheet object
+	 *
+	 * @since 1.1.1
+	 *
+	 * @var null
+	 */
+	protected $sheet = null;
+
+	/**
+	 * GoogleSheet constructor.
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param null $sheet_id
+	 */
+	public function __construct( $sheet_id = null ) {
+		if ( ! is_null( $sheet_id ) ) {
+			$this->sheet_id = $sheet_id;
+			$this->sheet    = $this->get_sheet_by_id( $sheet_id );
+		}
+	}
+
+	/**
+	 * Get the sheet by id
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param $sheet_id
+	 *
+	 * @return Sheets\Spreadsheet
+	 */
+	public function get_sheet_by_id( $sheet_id ) {
+		$client = $this->get_client();
+
+		if ( is_null( $client ) ) {
+			return null;
+		}
+
+		$service = new Sheets( $client );
+
+		$response = $service->spreadsheets->get( $sheet_id );
+
+		if ( ! is_a( $response, 'SheetWise\Scoped\Google\Service\Sheets\Spreadsheet' ) ) {
+			return null;
+		}
+
+		return $response;
+	}
+
+	public function get_service() {
+		return new Sheets( $this->get_client() );
+	}
+
+	/**
 	 * Creates and return the Google API Client. Returns null if failed to create the client
 	 *
 	 * @since 1.1.1

@@ -2,6 +2,10 @@
 
 namespace SheetWise;
 
+use Google\Service\Sheets;
+use SheetWise\Scoped\Google\Service\Sheets\ValueRange;
+use SheetWise\Admin\GoogleSheet;
+
 class Hooks {
 
 	/**
@@ -15,7 +19,7 @@ class Hooks {
 		$hooks = swise_get_data_sources();
 
 		foreach ( $hooks as $hook => $label ) {
-			add_action( $hook, [ $this, 'swise_' . $hook ] );
+			add_action( $hook, [ $this, 'swise_' . $hook ], 10, 3 );
 		}
 	}
 
@@ -49,6 +53,32 @@ class Hooks {
 				'user_register'
 			)
 		);
+
+		if ( empty( $results ) ) {
+			return;
+		}
+
+		foreach ( $results as $result ) {
+			$integration = get_post( $result->post_id );
+
+			if ( ! $integration ) {
+				continue;
+			}
+
+			$integration = json_decode( $integration->post_content );
+
+			if ( ! $integration ) {
+				continue;
+			}
+
+			$sheet_id = $integration->sheet_id;
+
+			$sheet = new GoogleSheet( $sheet_id );
+
+			// $sheet->get_sheet_by_id( $sheet_id );
+
+
+		}
 	}
 
 	/**
@@ -60,8 +90,98 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_wp_update_user( $user_id ) {
-		error_log( 'swise_wp_update_user' );
+	public function swise_wp_update_user( $user_id, $userdata, $userdata_raw ) {
+		global $wpdb;
+
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s",
+				swise_get_hook_meta_key(),
+				'wp_update_user'
+			)
+		);
+
+		if ( empty( $results ) ) {
+			return;
+		}
+
+		foreach ( $results as $result ) {
+			$integration = get_post( $result->post_id );
+
+			if ( ! $integration ) {
+				continue;
+			}
+
+			$integration = json_decode( $integration->post_content );
+
+			if ( ! $integration ) {
+				continue;
+			}
+
+			$sheet_id = $integration->sheet;
+
+			if ( ! $sheet_id ) {
+				continue;
+			}
+
+			$event_codes = $integration->event_codes;
+
+			if ( ! $event_codes ) {
+				continue;
+			}
+
+			$sheet = new GoogleSheet( $sheet_id );
+
+			$user = get_user_by( 'ID', $user_id );
+
+			if ( ! $user ) {
+				continue;
+			}
+
+			$args = [
+				'options'     => [ 'valueInputOption' => 'USER_ENTERED' ],
+				'type'        => 'append',
+				'clear_sheet' => false,
+			];
+
+			$data = [];
+
+			$all_event_codes = get_data_source_events();
+
+			if ( ! array_key_exists( 'wp_update_user', $all_event_codes ) ) {
+				continue;
+			}
+
+			$default_events = array_keys( $all_event_codes['wp_update_user'] );
+
+			// add `[[` and `]]` to the $default_events array
+			$default_events = array_map(
+				function ( $event ) {
+					return "[[$event]]";
+				}, $default_events
+			);
+
+			$user_values = [
+				$user->data->ID,
+				$user->data->user_email,
+				$user->data->user_login,
+				$user->data->user_registered,
+			];
+
+			$values = [];
+
+			foreach ( $event_codes as $event_code ) {
+				$values[] = str_replace( $default_events, $user_values, $event_code );
+			}
+
+			$value_range = new ValueRange();
+			$value_range->setValues( [ $values ] );
+
+			$service = $sheet->get_service();
+
+			// append data in the first sheet of the spreadsheet
+			$service->spreadsheets_values->append( $sheet_id, 'Sheet1', $value_range, $args['options'] );
+		}
 	}
 
 	/**
@@ -115,7 +235,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_wp_insert_post( $post_id, $post, $update ) {
+	public function swise_wp_insert_post( $post_id ) {
 		error_log( 'swise_wp_insert_post' );
 	}
 
@@ -130,7 +250,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_edit_post( $post_id, $post_after, $post_before ) {
+	public function swise_edit_post() {
 		error_log( 'swise_edit_post' );
 	}
 
