@@ -127,16 +127,46 @@ function swise_require_file( $file ) {
  */
 function swise_get_data_sources() {
 	$sources = [
-		'user_register'     => __( 'Wordpress New User', 'sheet-wise' ),
-		'wp_update_user'    => __( 'Wordpress User Profile Update', 'sheet-wise' ),
-		'delete_user'       => __( 'Wordpress Delete User', 'sheet-wise' ),
-		'wp_login'          => __( 'Wordpress User Login', 'sheet-wise' ),
-		'wp_logout'         => __( 'Wordpress User Logout', 'sheet-wise' ),
-		'wp_insert_post'    => __( 'Wordpress New Post', 'sheet-wise' ),
-		'edit_post'         => __( 'Wordpress Edit Post', 'sheet-wise' ),
-		'wp_trash_post'     => __( 'Wordpress Delete Post', 'sheet-wise' ),
-		'wp_insert_comment' => __( 'Wordpress Comment', 'sheet-wise' ),
-		'edit_comment'      => __( 'Wordpress Edit Comment', 'sheet-wise' ),
+		'user_register'     => [
+			'label'       => __( 'Wordpress New User', 'sheet-wise' ),
+			'num_of_args' => 2,
+		],
+		'wp_update_user'    => [
+			'label'       => __( 'Wordpress User Profile Update', 'sheet-wise' ),
+			'num_of_args' => 3,
+		],
+		'delete_user'       => [
+			'label'       => __( 'Wordpress Delete User', 'sheet-wise' ),
+			'num_of_args' => 3,
+		],
+		'wp_login'          => [
+			'label'       => __( 'Wordpress User Login', 'sheet-wise' ),
+			'num_of_args' => 2,
+		],
+		'wp_logout'         => [
+			'label'       => __( 'Wordpress User Logout', 'sheet-wise' ),
+			'num_of_args' => 1,
+		],
+		'wp_insert_post'    => [
+			'label'       => __( 'Wordpress New Post', 'sheet-wise' ),
+			'num_of_args' => 3,
+		],
+		'edit_post'         => [
+			'label'       => __( 'Wordpress Edit Post', 'sheet-wise' ),
+			'num_of_args' => 2,
+		],
+		'wp_trash_post'     => [
+			'label'       => __( 'Wordpress Delete Post', 'sheet-wise' ),
+			'num_of_args' => 2,
+		],
+		'wp_insert_comment' => [
+			'label'       => __( 'Wordpress Comment', 'sheet-wise' ),
+			'num_of_args' => 2,
+		],
+		'edit_comment'      => [
+			'label'       => __( 'Wordpress Edit Comment', 'sheet-wise' ),
+			'num_of_args' => 2,
+		],
 	];
 
 	return apply_filters( 'swise_integration_data_sources', $sources );

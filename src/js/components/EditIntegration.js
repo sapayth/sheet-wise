@@ -275,7 +275,7 @@ export default function EditIntegration() {
                                 <option value="select">{__( 'Select...', 'sheet-wise' )}</option>
                                 {
                                     Object.keys( dataSource ).map( ( key ) => {
-                                        return <option key={key} value={key}>{dataSource[key]}</option>
+                                        return <option key={key} value={key}>{dataSource[key].label}</option>
                                     } )
                                 }
                             </select>

@@ -2,7 +2,6 @@
 
 namespace SheetWise;
 
-use Google\Service\Sheets;
 use SheetWise\Scoped\Google\Service\Sheets\ValueRange;
 use SheetWise\Admin\GoogleSheet;
 
@@ -18,8 +17,10 @@ class Hooks {
 	public function __construct() {
 		$hooks = swise_get_data_sources();
 
-		foreach ( $hooks as $hook => $label ) {
-			add_action( $hook, [ $this, 'swise_' . $hook ], 10, 3 );
+		foreach ( $hooks as $hook => $value ) {
+			$num_of_args = ! empty( $value['num_of_args'] ) ? $value['num_of_args'] : 1;
+
+			add_action( $hook, [ $this, $hook ], 10, $num_of_args );
 		}
 	}
 
@@ -43,42 +44,121 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_user_register( $user_id ) {
-		global $wpdb;
-
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s",
-				swise_get_hook_meta_key(),
-				'user_register'
-			)
-		);
+	public function user_register( $user_id ) {
+		$results = $this->get_results( 'user_register' );
 
 		if ( empty( $results ) ) {
 			return;
 		}
 
 		foreach ( $results as $result ) {
-			$integration = get_post( $result->post_id );
+			$data = $this->get_common_data( $result );
 
-			if ( ! $integration ) {
+			if ( ! $data ) {
 				continue;
 			}
 
-			$integration = json_decode( $integration->post_content );
+			$event_codes = ! empty( $data['event_codes'] ) ? $data['event_codes'] : [];
+			$sheet       = ! empty( $data['sheet'] ) ? $data['sheet'] : null;
+			$sheet_id    = ! empty( $data['sheet_id'] ) ? $data['sheet_id'] : null;
 
-			if ( ! $integration ) {
+			if ( ! $event_codes || ! $sheet || ! $sheet_id ) {
 				continue;
 			}
 
-			$sheet_id = $integration->sheet_id;
+			$all_event_codes = get_data_source_events();
 
-			$sheet = new GoogleSheet( $sheet_id );
+			if ( ! array_key_exists( 'user_register', $all_event_codes ) ) {
+				continue;
+			}
 
-			// $sheet->get_sheet_by_id( $sheet_id );
+			$user = get_user_by( 'ID', $user_id );
 
+			if ( ! $user ) {
+				continue;
+			}
 
+			$args = [
+				'options'     => [ 'valueInputOption' => 'USER_ENTERED' ],
+				'type'        => 'append',
+				'clear_sheet' => false,
+			];
+
+			$user_values = [];
+			$default_events = array_keys( $all_event_codes['user_register'] );
+
+			foreach ( $default_events as $event ) {
+				if ( $event === 'user_id' ) {
+					$user_values[] = $user->data->ID;
+				} else {
+					$user_values[] = $user->data->$event;
+				}
+			}
+
+			// add `[[` and `]]` to the $default_events array
+			$default_events = array_map(
+				function ( $event ) {
+					return "[[$event]]";
+				}, $default_events
+			);
+
+			$values = [];
+
+			foreach ( $event_codes as $event_code ) {
+				$values[] = str_replace( $default_events, $user_values, $event_code );
+			}
+
+			$value_range = new ValueRange();
+			$value_range->setValues( [ $values ] );
+
+			$service = $sheet->get_service();
+
+			// append data in the first sheet of the spreadsheet
+			$service->spreadsheets_values->append( $sheet_id, 'Sheet1', $value_range, $args['options'] );
 		}
+	}
+
+	/**
+	 * Get the common data
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param object $result
+	 *
+	 * @return mixed
+	 */
+	private function get_common_data( $result ) {
+		$integration = get_post( $result->post_id );
+
+		if ( ! $integration ) {
+			return null;
+		}
+
+		$integration = json_decode( $integration->post_content );
+
+		if ( ! $integration ) {
+			return null;
+		}
+
+		$sheet_id = $integration->sheet;
+
+		if ( ! $sheet_id ) {
+			return null;
+		}
+
+		$event_codes = $integration->event_codes;
+
+		if ( ! $event_codes ) {
+			return null;
+		}
+
+		$sheet = new GoogleSheet( $sheet_id );
+
+		return [
+			'event_codes' => $integration->event_codes,
+			'sheet'       => $sheet,
+			'sheet_id'    => $sheet_id,
+		];
 	}
 
 	/**
@@ -90,7 +170,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_wp_update_user( $user_id, $userdata, $userdata_raw ) {
+	public function wp_update_user( $user_id, $userdata, $userdata_raw ) {
 		global $wpdb;
 
 		$results = $wpdb->get_results(
@@ -144,8 +224,6 @@ class Hooks {
 				'clear_sheet' => false,
 			];
 
-			$data = [];
-
 			$all_event_codes = get_data_source_events();
 
 			if ( ! array_key_exists( 'wp_update_user', $all_event_codes ) ) {
@@ -193,7 +271,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_delete_user( $user_id ) {
+	public function delete_user( $user_id ) {
 		error_log( 'swise_delete_user' );
 	}
 
@@ -207,7 +285,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_wp_login( $user_login, $user ) {
+	public function wp_login( $user_login, $user ) {
 		error_log( 'swise_wp_login' );
 	}
 
@@ -220,7 +298,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_wp_logout( $user ) {
+	public function wp_logout( $user ) {
 		error_log( 'swise_wp_logout' );
 	}
 
@@ -235,7 +313,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_wp_insert_post( $post_id ) {
+	public function wp_insert_post( $post_id ) {
 		error_log( 'swise_wp_insert_post' );
 	}
 
@@ -250,7 +328,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_edit_post() {
+	public function edit_post() {
 		error_log( 'swise_edit_post' );
 	}
 
@@ -263,7 +341,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_wp_trash_post( $post_id ) {
+	public function wp_trash_post( $post_id ) {
 		error_log( 'swise_wp_trash_post' );
 	}
 
@@ -277,7 +355,7 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_wp_insert_comment( $comment_id, $comment ) {
+	public function wp_insert_comment( $comment_id, $comment ) {
 		error_log( 'swise_wp_insert_comment' );
 	}
 
@@ -291,8 +369,26 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function swise_edit_comment( $comment_id, $comment ) {
+	public function edit_comment( $comment_id, $comment ) {
 		error_log( 'swise_edit_comment' );
 	}
 
+	/**
+	 * Get the results
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array
+	 */
+	private function get_results( $meta_value ) {
+		global $wpdb;
+
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s",
+				swise_get_hook_meta_key(),
+				$meta_value
+			)
+		);
+	}
 }
