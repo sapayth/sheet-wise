@@ -128,43 +128,43 @@ function swise_require_file( $file ) {
 function swise_get_data_sources() {
 	$sources = [
 		'user_register'     => [
-			'label'       => __( 'Wordpress New User', 'sheet-wise' ),
+			'label'       => __( 'WordPress New User', 'sheet-wise' ),
 			'num_of_args' => 2,
 		],
 		'wp_update_user'    => [
-			'label'       => __( 'Wordpress User Profile Update', 'sheet-wise' ),
+			'label'       => __( 'WordPress User Profile Update', 'sheet-wise' ),
 			'num_of_args' => 3,
 		],
 		'delete_user'       => [
-			'label'       => __( 'Wordpress Delete User', 'sheet-wise' ),
+			'label'       => __( 'WordPress Delete User', 'sheet-wise' ),
 			'num_of_args' => 3,
 		],
 		'wp_login'          => [
-			'label'       => __( 'Wordpress User Login', 'sheet-wise' ),
+			'label'       => __( 'WordPress User Login', 'sheet-wise' ),
 			'num_of_args' => 2,
 		],
 		'wp_logout'         => [
-			'label'       => __( 'Wordpress User Logout', 'sheet-wise' ),
+			'label'       => __( 'WordPress User Logout', 'sheet-wise' ),
 			'num_of_args' => 1,
 		],
 		'wp_insert_post'    => [
-			'label'       => __( 'Wordpress New Post', 'sheet-wise' ),
+			'label'       => __( 'WordPress New Post', 'sheet-wise' ),
 			'num_of_args' => 3,
 		],
 		'edit_post'         => [
-			'label'       => __( 'Wordpress Edit Post', 'sheet-wise' ),
+			'label'       => __( 'WordPress Edit Post', 'sheet-wise' ),
 			'num_of_args' => 2,
 		],
 		'wp_trash_post'     => [
-			'label'       => __( 'Wordpress Delete Post', 'sheet-wise' ),
+			'label'       => __( 'WordPress Delete Post', 'sheet-wise' ),
 			'num_of_args' => 2,
 		],
 		'wp_insert_comment' => [
-			'label'       => __( 'Wordpress Comment', 'sheet-wise' ),
+			'label'       => __( 'WordPress Comment', 'sheet-wise' ),
 			'num_of_args' => 2,
 		],
 		'edit_comment'      => [
-			'label'       => __( 'Wordpress Edit Comment', 'sheet-wise' ),
+			'label'       => __( 'WordPress Edit Comment', 'sheet-wise' ),
 			'num_of_args' => 2,
 		],
 	];
@@ -218,8 +218,64 @@ function get_data_source_events() {
 					'type'  => 'text',
 				],
 				'user_registered' => [
-					'label' => __( 'User Registered', 'sheet-wise' ),
+					'label' => __( 'User Registered Time', 'sheet-wise' ),
 					'type'  => 'date-time',
+				],
+				'first_name'      => [
+					'label' => __( 'First Name', 'sheet-wise' ),
+					'type'  => 'text',
+				],
+				'last_name'       => [
+					'label' => __( 'Last Name', 'sheet-wise' ),
+					'type'  => 'text',
+				],
+				'user_nicename'        => [
+					'label' => __( 'Nickname', 'sheet-wise' ),
+					'type'  => 'text',
+				],
+				'description'         => [
+					'label' => __( 'Description', 'sheet-wise' ),
+					'type'  => 'textarea',
+				],
+				'role'                => [
+					'label' => __( 'Role', 'sheet-wise' ),
+					'type'  => 'text',
+				],
+				'locale'              => [
+					'label' => __( 'Locale', 'sheet-wise' ),
+					'type'  => 'text',
+				],
+				'rich_editing'        => [
+					'label' => __( 'Rich Editing', 'sheet-wise' ),
+					'type'  => 'boolean',
+				],
+				'syntax_highlighting' => [
+					'label' => __( 'Syntax Highlighting', 'sheet-wise' ),
+					'type'  => 'boolean',
+				],
+				'comment_shortcuts'   => [
+					'label' => __( 'Comment Shortcuts', 'sheet-wise' ),
+					'type'  => 'boolean',
+				],
+				'admin_color'         => [
+					'label' => __( 'Admin Color', 'sheet-wise' ),
+					'type'  => 'text',
+				],
+				'use_ssl'            => [
+					'label' => __( 'Use SSL', 'sheet-wise' ),
+					'type'  => 'boolean',
+				],
+				'show_admin_bar_front' => [
+					'label' => __( 'Show Admin Bar Front', 'sheet-wise' ),
+					'type'  => 'boolean',
+				],
+				'user_url'            => [
+					'label' => __( 'User URL', 'sheet-wise' ),
+					'type'  => 'url',
+				],
+				'display_name'        => [
+					'label' => __( 'Display Name', 'sheet-wise' ),
+					'type'  => 'text',
 				],
 			],
 		]

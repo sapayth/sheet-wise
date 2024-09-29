@@ -24,17 +24,6 @@ class Hooks {
 		}
 	}
 
-	// user_register
-	// wp_update_user
-	// delete_user
-	// wp_login
-	// wp_logout
-	// wp_insert_post
-	// edit_post
-	// wp_trash_post
-	// wp_insert_comment
-	// edit_comment
-
 	/**
 	 * Handle the user_register hook
 	 *
@@ -175,9 +164,12 @@ class Hooks {
 
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s",
+				"SELECT * FROM $wpdb->postmeta pm
+				INNER JOIN $wpdb->posts p ON pm.post_id = p.ID
+				WHERE pm.meta_key = %s AND pm.meta_value = %s AND p.post_status != %s",
 				swise_get_hook_meta_key(),
-				'wp_update_user'
+				'wp_update_user',
+				'draft'
 			)
 		);
 
@@ -239,12 +231,29 @@ class Hooks {
 				}, $default_events
 			);
 
-			$user_values = [
-				$user->data->ID,
-				$user->data->user_email,
-				$user->data->user_login,
-				$user->data->user_registered,
-			];
+			$user_values = apply_filters(
+				'swise_wp_update_user_values',
+				[
+					$user->data->ID,
+					$user->data->user_email,
+					$user->data->user_login,
+					$user->data->user_registered,
+					$userdata['first_name'],
+					$userdata['last_name'],
+					$user->data->user_nicename,
+					$userdata['description'],
+					$userdata['role'],
+					$userdata['locale'],
+					$userdata['rich_editing'],
+					$userdata['syntax_highlighting'],
+					$userdata['comment_shortcuts'],
+					$userdata['admin_color'],
+					$userdata['use_ssl'],
+					$userdata['show_admin_bar_front'],
+					$user->data->user_url,
+					$user->data->display_name,
+				]
+			);
 
 			$values = [];
 
