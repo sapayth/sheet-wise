@@ -8,8 +8,6 @@ export default function ListTable() {
     const [integrations, setIntegrations] = useState( [] );
     const [loading, setLoading] = useState( true );
 
-    const googleSheetLink = 'https://docs.google.com/spreadsheets/d/';
-
     useEffect( () => {
         fetchIntegrations();
     }, [] );
@@ -37,12 +35,12 @@ export default function ListTable() {
             } );
     };
 
-    const handleDelete = async (event) => {
+    const handleDelete = async ( event ) => {
         if (!confirm( __( 'Are you sure you want to delete this integration?', 'sheet-wise' ) )) {
             return;
         }
 
-        const integrationId = event.target.closest('tr').querySelector('td:nth-child(2)').textContent;
+        const integrationId = event.target.getAttribute( 'data-id' );
         let path = '/wp-json/swise/v1/integrations/' + integrationId;
 
         await apiFetch( {
@@ -61,6 +59,46 @@ export default function ListTable() {
             console.log( error );
         } );
     }
+
+    const handleStatusChange = async ( event ) => {
+        const id = event.target.getAttribute( 'data-id' );
+        const postStatus = event.target.getAttribute( 'data-post-status' );
+        let path = '/wp-json/swise/v1/integrations/' + id;
+
+        const data = {
+            value: postStatus === 'publish' ? 'draft' : 'publish',
+            id: id,
+            edit_single: true,
+            row_name: 'post_status',
+        };
+
+        await apiFetch( {
+            path: addQueryArgs( path ),
+            method: 'PATCH',
+            headers: {
+                'X-WP-Nonce': swiseDashboard.nonce,
+            },
+            body: JSON.stringify( data ),
+        } )
+        .then( ( response ) => {
+            if (response.success) {
+                fetchIntegrations();
+            }
+        } )
+        .catch( ( error ) => {
+            console.log( error );
+        } );
+    }
+
+    const toggleBtnClass = {
+        draft: 'swise-bg-gray-200',
+        publish: 'swise-bg-indigo-600',
+    };
+
+    const toggleSpanClass = {
+        draft: 'swise-translate-x-0',
+        publish: 'swise-translate-x-5',
+    };
 
     return (
         <div className="swise-flow-root">
@@ -92,6 +130,10 @@ export default function ListTable() {
                                         className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
                                         {__( 'Edit', 'sheet-wise' )}
                                     </th>
+                                    <th scope="col"
+                                        className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
+                                        {__( 'Live/Pause', 'sheet-wise' )}
+                                    </th>
                                     <th scope="col"></th>
                                 </tr>
                                 </thead>
@@ -105,12 +147,28 @@ export default function ListTable() {
                                                 <a href={swiseDashboard.pageURL + '#/integration/' + integration.id}
                                                    className="swise-text-indigo-600 hover:swise-text-indigo-900">{__( 'Edit', 'integration-wise' )}
                                                     <span
-                                                    className="swise-sr-only">, {integration.title}</span></a>
+                                                        className="swise-sr-only">, {integration.title}</span></a>
+                                            </td>
+                                            <td className="swise-whitespace-nowrap swise-px-3 swise-py-4 swise-text-sm swise-text-gray-500">
+                                                <button
+                                                    onClick={handleStatusChange}
+                                                    data-id={integration.id}
+                                                    data-post-status={integration.post_status}
+                                                    type="button"
+                                                    className={`swise-relative swise-inline-flex swise-h-6 swise-w-11 swise-flex-shrink-0 swise-cursor-pointer swise-rounded-full swise-border-2 swise-border-transparent swise-transition-colors swise-duration-200 swise-ease-in-out ${toggleBtnClass[integration.post_status]}`}
+                                                    role="switch"
+                                                    aria-checked="false">
+                                                    <span
+                                                        aria-hidden="true"
+                                                        className={`swise-pointer-events-none swise-inline-block swise-h-5 swise-w-5 swise-transform swise-rounded-full swise-bg-white swise-shadow swise-ring-0 swise-transition swise-duration-200 swise-ease-in-out ${toggleSpanClass[integration.post_status]}`}></span>
+                                                </button>
                                             </td>
                                             <td className="swise-whitespace-nowrap swise-px-3 swise-py-4 swise-text-sm swise-text-gray-500">
                                                 <button
                                                     className="swise-text-red-600 hover:swise-text-red-900"
-                                                    onClick={handleDelete}>
+                                                    onClick={handleDelete}
+                                                    data-id={integration.id}
+                                                >
                                                     {__( 'Delete', 'integration-wise' )}
                                                 </button>
                                             </td>

@@ -131,6 +131,15 @@ class Integrations extends Swise_REST_Controller {
 		if ( ! $integration ) {
 			return $this->error_response( new \WP_Error( 'invalid_json', 'Invalid JSON' ) );
 		}
+
+		if ( $integration->edit_single ) {
+			if ( ! $integration->id || ! $integration->row_name || ! $integration->value ) {
+				return $this->error_response( new \WP_Error( 'invalid_json', 'Invalid JSON' ) );
+			}
+
+			return $this->edit_single_row( $integration->id, $integration->row_name, $integration->value );
+		}
+
 		$sanitized_rows  = [];
 		$sanitized_event_codes  = [];
 		$sanitized_data_sources = [];
@@ -279,7 +288,8 @@ class Integrations extends Swise_REST_Controller {
 		$integrations = get_posts(
 			[
 				'post_type'      => swise_get_post_type(),
-				'posts_per_page' => -1,
+				'posts_per_page' => - 1,
+				'post_status'    => [ 'publish', 'draft' ],
 			]
 		);
 
@@ -287,8 +297,9 @@ class Integrations extends Swise_REST_Controller {
 
 		foreach ( $integrations as $integration ) {
 			$items[] = [
-				'id'    => $integration->ID,
-				'title' => $integration->post_title,
+				'id'          => $integration->ID,
+				'title'       => $integration->post_title,
+				'post_status' => $integration->post_status,
 			];
 		}
 
@@ -324,6 +335,31 @@ class Integrations extends Swise_REST_Controller {
 				'code'        => 200,
 				'success'     => true,
 				'data'        => $integration,
+			]
+		);
+	}
+
+	private function edit_single_row( $integration_id, $row_name, $value ) {
+		$integration_id = wp_update_post(
+			[
+				$row_name => $value,
+				'ID'      => $integration_id,
+			]
+		);
+
+		if ( is_wp_error( $integration_id ) ) {
+			return $this->error_response( $integration_id );
+		}
+
+		return rest_ensure_response(
+			[
+				'code'    => 200,
+				'message' => sprintf(
+					// translators: %s: DB row name
+					__( '%s updated successfully', 'sheet-wise' ),
+					$row_name
+				),
+				'id'      => $integration_id,
 			]
 		);
 	}
