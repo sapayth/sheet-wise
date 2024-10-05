@@ -4,6 +4,7 @@ namespace SheetWise;
 
 use SheetWise\Scoped\Google\Service\Sheets\ValueRange;
 use SheetWise\Admin\GoogleSheet;
+use WP_Post;
 
 class Hooks {
 
@@ -55,7 +56,7 @@ class Hooks {
 				continue;
 			}
 
-			$all_event_codes = get_data_source_events();
+			$all_event_codes = swise_get_data_source_events();
 
 			if ( ! array_key_exists( 'user_register', $all_event_codes ) ) {
 				continue;
@@ -202,21 +203,13 @@ class Hooks {
 				continue;
 			}
 
-			$sheet = new GoogleSheet( $sheet_id );
-
 			$user = get_user_by( 'ID', $user_id );
 
 			if ( ! $user ) {
 				continue;
 			}
 
-			$args = [
-				'options'     => [ 'valueInputOption' => 'USER_ENTERED' ],
-				'type'        => 'append',
-				'clear_sheet' => false,
-			];
-
-			$all_event_codes = get_data_source_events();
+			$all_event_codes = swise_get_data_source_events();
 
 			if ( ! array_key_exists( 'wp_update_user', $all_event_codes ) ) {
 				continue;
@@ -261,13 +254,22 @@ class Hooks {
 				$values[] = str_replace( $default_events, $user_values, $event_code );
 			}
 
-			$value_range = new ValueRange();
-			$value_range->setValues( [ $values ] );
+			// define hook name beforehand
+			$creation_hook = 'sheetwise_scheduled_' . $integration->source;
 
-			$service = $sheet->get_service();
-
-			// append data in the first sheet of the spreadsheet
-			$service->spreadsheets_values->append( $sheet_id, 'Sheet1', $value_range, $args['options'] );
+			if ( false === as_next_scheduled_action( $creation_hook ) ) {
+				// enqueue the action
+				as_enqueue_async_action(
+					$creation_hook,
+					[
+						'args' => [
+							'hook'      => $integration->source,
+							'values'    => $values,
+							'sheet_id'  => $sheet_id,
+						],
+					]
+				);
+			}
 		}
 	}
 
@@ -322,8 +324,10 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function wp_insert_post( $post_id ) {
-		error_log( 'swise_wp_insert_post' );
+	public function wp_insert_post( $post_id, $post, $update ) {
+		if ( ! in_array( get_post_type( $post_id ), swise_get_supported_post_types(), true ) ) {
+			return;
+		}
 	}
 
 	/**
@@ -332,12 +336,14 @@ class Hooks {
 	 * @since 1.0.0
 	 *
 	 * @param int $post_id
-	 * @param WP_Post $post_after
-	 * @param WP_Post $post_before
+	 * @param WP_Post $post
 	 *
 	 * @return void
 	 */
-	public function edit_post() {
+	public function edit_post( $post_id, $post ) {
+		if ( ! in_array( get_post_type( $post_id ), swise_get_supported_post_types(), true ) ) {
+			return;
+		}
 		error_log( 'swise_edit_post' );
 	}
 

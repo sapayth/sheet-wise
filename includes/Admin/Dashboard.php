@@ -28,7 +28,7 @@ class Dashboard {
 				'restURL'     => rest_url( 'swise/v1' ),
 				'pageURL'     => admin_url( 'admin.php?page=sheet-wise' ),
 				'dataSources' => swise_get_data_sources(),
-				'dataEvents'  => get_data_source_events(),
+				'dataEvents'  => swise_get_data_source_events(),
 			]
 		);
 	}

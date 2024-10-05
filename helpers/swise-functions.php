@@ -179,7 +179,7 @@ function swise_get_data_sources() {
  *
  * @return array
  */
-function get_data_source_events() {
+function swise_get_data_source_events() {
 	$user_register     = apply_filters(
 		'data_source_event_user_register', [
 			'user_register' => [
@@ -455,4 +455,15 @@ function get_data_source_events() {
 	);
 
 	return apply_filters( 'swise_integration_data_source_events', $events );
+}
+
+/**
+ * Get the supported post types
+ *
+ * @since 1.0.0
+ *
+ * @return array
+ */
+function swise_get_supported_post_types() {
+	return [ 'post' ];
 }

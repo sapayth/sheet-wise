@@ -189,20 +189,6 @@ class Integrations extends Swise_REST_Controller {
 
 		update_post_meta( $integration_id, swise_get_hook_meta_key(), $source );
 
-		// define hook name beforehand
-//		$creation_hook = 'sheetwise_sc_integration_update';
-//
-//		if ( false === as_next_scheduled_action( $creation_hook ) ) {
-//			// enqueue the action
-//			as_enqueue_async_action(
-//				$creation_hook,
-//				[
-//					'hook'           => $integration->source,
-//					'integration_id' => $integration_id,
-//				]
-//			);
-//		}
-
 		return rest_ensure_response(
 			[
 				'code'    => 200,
@@ -234,7 +220,14 @@ class Integrations extends Swise_REST_Controller {
 		$title        = $integration->title ? sanitize_text_field( $integration->title ) : '';
 		$rows         = is_array( $integration->rows ) ? $integration->rows : [];
 		$event_codes  = is_array( $integration->event_codes ) ? $integration->event_codes : [];
+		$source       = $integration->source ? sanitize_text_field( $integration->source ) : '';
 		$data_sources = is_array( $integration->data_sources ) ? $integration->data_sources : [];
+
+		$default_sources = swise_get_data_sources();
+
+		if ( ! array_key_exists( $source, $default_sources ) ) {
+			return $this->error_response( new \WP_Error( 'invalid_source', 'Invalid source' ) );
+		}
 
 		foreach ( $rows as $row ) {
 			$sanitized_rows[] = sanitize_text_field( $row );
@@ -265,6 +258,8 @@ class Integrations extends Swise_REST_Controller {
 		if ( is_wp_error( $integration_id ) ) {
 			return $this->error_response( $integration_id );
 		}
+
+		update_post_meta( $integration_id, swise_get_hook_meta_key(), $source );
 
 		return rest_ensure_response(
 			[
