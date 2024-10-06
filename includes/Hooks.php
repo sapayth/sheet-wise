@@ -35,7 +35,18 @@ class Hooks {
 	 * @return void
 	 */
 	public function user_register( $user_id ) {
-		$results = $this->get_results( 'user_register' );
+		global $wpdb;
+
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM $wpdb->postmeta pm
+				INNER JOIN $wpdb->posts p ON pm.post_id = p.ID
+				WHERE pm.meta_key = %s AND pm.meta_value = %s AND p.post_status != %s",
+				swise_get_hook_meta_key(),
+				'user_register',
+				'draft'
+			)
+		);
 
 		if ( empty( $results ) ) {
 			return;
@@ -51,8 +62,9 @@ class Hooks {
 			$event_codes = ! empty( $data['event_codes'] ) ? $data['event_codes'] : [];
 			$sheet       = ! empty( $data['sheet'] ) ? $data['sheet'] : null;
 			$sheet_id    = ! empty( $data['sheet_id'] ) ? $data['sheet_id'] : null;
+			$source      = ! empty( $data['source'] ) ? $data['source'] : null;
 
-			if ( ! $event_codes || ! $sheet || ! $sheet_id ) {
+			if ( ! $event_codes || ! $sheet || ! $sheet_id || $source ) {
 				continue;
 			}
 
@@ -67,12 +79,6 @@ class Hooks {
 			if ( ! $user ) {
 				continue;
 			}
-
-			$args = [
-				'options'     => [ 'valueInputOption' => 'USER_ENTERED' ],
-				'type'        => 'append',
-				'clear_sheet' => false,
-			];
 
 			$user_values = [];
 			$default_events = array_keys( $all_event_codes['user_register'] );
@@ -98,13 +104,22 @@ class Hooks {
 				$values[] = str_replace( $default_events, $user_values, $event_code );
 			}
 
-			$value_range = new ValueRange();
-			$value_range->setValues( [ $values ] );
+			// define hook name beforehand
+			$creation_hook = 'sheetwise_scheduled_' . $source;
 
-			$service = $sheet->get_service();
-
-			// append data in the first sheet of the spreadsheet
-			$service->spreadsheets_values->append( $sheet_id, 'Sheet1', $value_range, $args['options'] );
+			if ( false === as_next_scheduled_action( $creation_hook ) ) {
+				// enqueue the action
+				as_enqueue_async_action(
+					$creation_hook,
+					[
+						'args' => [
+							'hook'      => $source,
+							'values'    => $values,
+							'sheet_id'  => $sheet_id,
+						],
+					]
+				);
+			}
 		}
 	}
 
@@ -142,12 +157,19 @@ class Hooks {
 			return null;
 		}
 
+		$source = $integration->source;
+
+		if ( ! $source ) {
+			return null;
+		}
+
 		$sheet = new GoogleSheet( $sheet_id );
 
 		return [
 			'event_codes' => $integration->event_codes,
 			'sheet'       => $sheet,
 			'sheet_id'    => $sheet_id,
+			'source'      => $source,
 		];
 	}
 
@@ -179,39 +201,30 @@ class Hooks {
 		}
 
 		foreach ( $results as $result ) {
-			$integration = get_post( $result->post_id );
+			$data = $this->get_common_data( $result );
 
-			if ( ! $integration ) {
+			if ( ! $data ) {
 				continue;
 			}
 
-			$integration = json_decode( $integration->post_content );
+			$event_codes = ! empty( $data['event_codes'] ) ? $data['event_codes'] : [];
+			$sheet       = ! empty( $data['sheet'] ) ? $data['sheet'] : null;
+			$sheet_id    = ! empty( $data['sheet_id'] ) ? $data['sheet_id'] : null;
+			$source      = ! empty( $data['source'] ) ? $data['source'] : null;
 
-			if ( ! $integration ) {
-				continue;
-			}
-
-			$sheet_id = $integration->sheet;
-
-			if ( ! $sheet_id ) {
-				continue;
-			}
-
-			$event_codes = $integration->event_codes;
-
-			if ( ! $event_codes ) {
-				continue;
-			}
-
-			$user = get_user_by( 'ID', $user_id );
-
-			if ( ! $user ) {
+			if ( ! $event_codes || ! $sheet || ! $sheet_id ) {
 				continue;
 			}
 
 			$all_event_codes = swise_get_data_source_events();
 
 			if ( ! array_key_exists( 'wp_update_user', $all_event_codes ) ) {
+				continue;
+			}
+
+			$user = get_user_by( 'ID', $user_id );
+
+			if ( ! $user ) {
 				continue;
 			}
 
@@ -236,13 +249,6 @@ class Hooks {
 					$user->data->user_nicename,
 					$userdata['description'],
 					$userdata['role'],
-					$userdata['locale'],
-					$userdata['rich_editing'],
-					$userdata['syntax_highlighting'],
-					$userdata['comment_shortcuts'],
-					$userdata['admin_color'],
-					$userdata['use_ssl'],
-					$userdata['show_admin_bar_front'],
 					$user->data->user_url,
 					$user->data->display_name,
 				]
@@ -255,7 +261,7 @@ class Hooks {
 			}
 
 			// define hook name beforehand
-			$creation_hook = 'sheetwise_scheduled_' . $integration->source;
+			$creation_hook = 'sheetwise_scheduled_' . $source;
 
 			if ( false === as_next_scheduled_action( $creation_hook ) ) {
 				// enqueue the action
@@ -263,7 +269,7 @@ class Hooks {
 					$creation_hook,
 					[
 						'args' => [
-							'hook'      => $integration->source,
+							'hook'      => $source,
 							'values'    => $values,
 							'sheet_id'  => $sheet_id,
 						],

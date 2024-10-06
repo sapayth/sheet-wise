@@ -241,34 +241,6 @@ function swise_get_data_source_events() {
 					'label' => __( 'Role', 'sheet-wise' ),
 					'type'  => 'text',
 				],
-				'locale'              => [
-					'label' => __( 'Locale', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'rich_editing'        => [
-					'label' => __( 'Rich Editing', 'sheet-wise' ),
-					'type'  => 'boolean',
-				],
-				'syntax_highlighting' => [
-					'label' => __( 'Syntax Highlighting', 'sheet-wise' ),
-					'type'  => 'boolean',
-				],
-				'comment_shortcuts'   => [
-					'label' => __( 'Comment Shortcuts', 'sheet-wise' ),
-					'type'  => 'boolean',
-				],
-				'admin_color'         => [
-					'label' => __( 'Admin Color', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'use_ssl'            => [
-					'label' => __( 'Use SSL', 'sheet-wise' ),
-					'type'  => 'boolean',
-				],
-				'show_admin_bar_front' => [
-					'label' => __( 'Show Admin Bar Front', 'sheet-wise' ),
-					'type'  => 'boolean',
-				],
 				'user_url'            => [
 					'label' => __( 'User URL', 'sheet-wise' ),
 					'type'  => 'url',
