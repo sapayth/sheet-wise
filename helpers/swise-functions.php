@@ -182,140 +182,27 @@ function swise_get_data_sources() {
 function swise_get_data_source_events() {
 	$user_register     = apply_filters(
 		'data_source_event_user_register', [
-			'user_register' => [
-				'user_id'         => [
-					'label' => __( 'User ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'user_email'      => [
-					'label' => __( 'User Email', 'sheet-wise' ),
-					'type'  => 'email',
-				],
-				'user_login'      => [
-					'label' => __( 'User Login', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'user_registered' => [
-					'label' => __( 'User Registered', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-			],
+			'user_register' => swise_get_common_user_data_source_events(),
 		]
 	);
 	$update_user       = apply_filters(
 		'data_source_event_update_user', [
-			'wp_update_user' => [
-				'user_id'         => [
-					'label' => __( 'User ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'user_email'      => [
-					'label' => __( 'User Email', 'sheet-wise' ),
-					'type'  => 'email',
-				],
-				'user_login'      => [
-					'label' => __( 'User Login', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'user_registered' => [
-					'label' => __( 'User Registered Time', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-				'first_name'      => [
-					'label' => __( 'First Name', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'last_name'       => [
-					'label' => __( 'Last Name', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'user_nicename'        => [
-					'label' => __( 'Nickname', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'description'         => [
-					'label' => __( 'Description', 'sheet-wise' ),
-					'type'  => 'textarea',
-				],
-				'role'                => [
-					'label' => __( 'Role', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'user_url'            => [
-					'label' => __( 'User URL', 'sheet-wise' ),
-					'type'  => 'url',
-				],
-				'display_name'        => [
-					'label' => __( 'Display Name', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-			],
+			'wp_update_user' => swise_get_common_user_data_source_events(),
 		]
 	);
 	$delete_user       = apply_filters(
 		'data_source_event_delete_user', [
-			'delete_user' => [
-				'user_id'         => [
-					'label' => __( 'User ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'user_email'      => [
-					'label' => __( 'User Email', 'sheet-wise' ),
-					'type'  => 'email',
-				],
-				'user_login'      => [
-					'label' => __( 'User Login', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'user_registered' => [
-					'label' => __( 'User Registered', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-			],
+			'delete_user' => swise_get_common_user_data_source_events(),
 		]
 	);
 	$wp_login          = apply_filters(
 		'data_source_event_wp_login', [
-			'wp_login' => [
-				'user_id'         => [
-					'label' => __( 'User ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'user_email'      => [
-					'label' => __( 'User Email', 'sheet-wise' ),
-					'type'  => 'email',
-				],
-				'user_login'      => [
-					'label' => __( 'User Login', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'user_registered' => [
-					'label' => __( 'User Registered', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-			],
+			'wp_login' => swise_get_common_user_data_source_events(),
 		]
 	);
 	$wp_logout         = apply_filters(
 		'data_source_event_wp_logout', [
-			'wp_logout' => [
-				'user_id'         => [
-					'label' => __( 'User ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'user_email'      => [
-					'label' => __( 'User Email', 'sheet-wise' ),
-					'type'  => 'email',
-				],
-				'user_login'      => [
-					'label' => __( 'User Login', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'user_registered' => [
-					'label' => __( 'User Registered', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-			],
+			'wp_logout' => swise_get_common_user_data_source_events(),
 		]
 	);
 	$wp_insert_post    = apply_filters(
@@ -438,4 +325,62 @@ function swise_get_data_source_events() {
  */
 function swise_get_supported_post_types() {
 	return [ 'post' ];
+}
+
+/**
+ * Get the common user data source events
+ *
+ * @since 1.0.0
+ *
+ * @return array
+ */
+function swise_get_common_user_data_source_events() {
+	return apply_filters(
+		'swise_common_user_data_source_events', [
+			'user_id'         => [
+				'label' => __( 'User ID', 'sheet-wise' ),
+				'type'  => 'number',
+			],
+			'user_email'      => [
+				'label' => __( 'User Email', 'sheet-wise' ),
+				'type'  => 'email',
+			],
+			'user_login'      => [
+				'label' => __( 'User Login', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+			'user_registered' => [
+				'label' => __( 'User Registered Time', 'sheet-wise' ),
+				'type'  => 'date-time',
+			],
+			'first_name'      => [
+				'label' => __( 'First Name', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+			'last_name'       => [
+				'label' => __( 'Last Name', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+			'user_nicename'   => [
+				'label' => __( 'Nice name', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+			'nickname'        => [
+				'label' => __( 'Nickname', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+			'description'     => [
+				'label' => __( 'Description', 'sheet-wise' ),
+				'type'  => 'textarea',
+			],
+			'user_url'        => [
+				'label' => __( 'User URL', 'sheet-wise' ),
+				'type'  => 'url',
+			],
+			'display_name'    => [
+				'label' => __( 'Display Name', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+		]
+	);
 }
