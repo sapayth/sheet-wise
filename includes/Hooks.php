@@ -5,6 +5,7 @@ namespace SheetWise;
 use SheetWise\Scoped\Google\Service\Sheets\ValueRange;
 use SheetWise\Admin\GoogleSheet;
 use WP_Post;
+use WP_User;
 
 class Hooks {
 
@@ -124,56 +125,6 @@ class Hooks {
 	}
 
 	/**
-	 * Get the common data
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param object $result
-	 *
-	 * @return mixed
-	 */
-	private function get_common_data( $result ) {
-		$integration = get_post( $result->post_id );
-
-		if ( ! $integration ) {
-			return null;
-		}
-
-		$integration = json_decode( $integration->post_content );
-
-		if ( ! $integration ) {
-			return null;
-		}
-
-		$sheet_id = $integration->sheet;
-
-		if ( ! $sheet_id ) {
-			return null;
-		}
-
-		$event_codes = $integration->event_codes;
-
-		if ( ! $event_codes ) {
-			return null;
-		}
-
-		$source = $integration->source;
-
-		if ( ! $source ) {
-			return null;
-		}
-
-		$sheet = new GoogleSheet( $sheet_id );
-
-		return [
-			'event_codes' => $integration->event_codes,
-			'sheet'       => $sheet,
-			'sheet_id'    => $sheet_id,
-			'source'      => $source,
-		];
-	}
-
-	/**
 	 * Handle the wp_update_user hook
 	 *
 	 * @since 1.0.0
@@ -212,7 +163,7 @@ class Hooks {
 			$sheet_id    = ! empty( $data['sheet_id'] ) ? $data['sheet_id'] : null;
 			$source      = ! empty( $data['source'] ) ? $data['source'] : null;
 
-			if ( ! $event_codes || ! $sheet || ! $sheet_id ) {
+			if ( ! $event_codes || ! $sheet || ! $sheet_id || $source ) {
 				continue;
 			}
 
@@ -284,12 +235,84 @@ class Hooks {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $user_id
+	 * @param int     $id
+	 *        ID of the user to delete.
+	 *
+	 * @param bool    $reassign
+	 *        ID of the user to reassign posts and links to.
+	 *        Default null, for no reassignment.
+	 *
+	 * @param WP_User $user
+	 *        WP_User object of the user to delete.
 	 *
 	 * @return void
 	 */
-	public function delete_user( $user_id ) {
-		error_log( 'swise_delete_user' );
+	public function delete_user( $id, $reassign, $user ) {
+		$action = 'delete_user';
+		$results = $this->get_results( $action );
+
+		if ( empty( $results ) ) {
+			return;
+		}
+
+		foreach ( $results as $result ) {
+			$data = $this->get_common_data( $result );
+			if ( ! $data ) {
+				continue;
+			}
+
+			$all_event_codes = swise_get_data_source_events();
+			if ( ! array_key_exists( $action, $all_event_codes ) ) {
+				continue;
+			}
+
+			$all_event_codes = swise_get_data_source_events();
+
+			if ( ! array_key_exists( $action, $all_event_codes ) ) {
+				continue;
+			}
+
+			$user_values = [];
+			$default_events = array_keys( $all_event_codes['user_register'] );
+
+			foreach ( $default_events as $event ) {
+				if ( $event === 'user_id' ) {
+					$user_values[] = $user->data->ID;
+				} else {
+					$user_values[] = $user->data->$event;
+				}
+			}
+
+			// add `[[` and `]]` to the $default_events array
+			$default_events = array_map(
+				function ( $event ) {
+					return "[[$event]]";
+				}, $default_events
+			);
+
+			$values = [];
+
+			foreach ( $data['event_codes'] as $event_code ) {
+				$values[] = str_replace( $default_events, $user_values, $event_code );
+			}
+
+			// define hook name beforehand
+			$creation_hook = 'sheetwise_scheduled_' . $data['source'];
+
+			if ( false === as_next_scheduled_action( $creation_hook ) ) {
+				// enqueue the action
+				as_enqueue_async_action(
+					$creation_hook,
+					[
+						'args' => [
+							'hook'      => $data['source'],
+							'values'    => $values,
+							'sheet_id'  => $data['sheet_id'],
+						],
+					]
+				);
+			}
+		}
 	}
 
 	/**
@@ -399,17 +422,70 @@ class Hooks {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return array
+	 * @return array|object|null Database query results.
 	 */
 	private function get_results( $meta_value ) {
 		global $wpdb;
 
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s",
+				"SELECT * FROM $wpdb->postmeta pm
+				INNER JOIN $wpdb->posts p ON pm.post_id = p.ID
+				WHERE pm.meta_key = %s AND pm.meta_value = %s AND p.post_status != %s",
 				swise_get_hook_meta_key(),
-				$meta_value
+				$meta_value,
+				'draft'
 			)
 		);
+	}
+
+	/**
+	 * Get the common data
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param object $result
+	 *
+	 * @return null|array
+	 */
+	private function get_common_data( $result ) {
+		$integration = get_post( $result->post_id );
+
+		if ( ! $integration ) {
+			return null;
+		}
+
+		$integration = json_decode( $integration->post_content );
+
+		if ( ! $integration ) {
+			return null;
+		}
+
+		$sheet_id = $integration->sheet;
+
+		if ( ! $sheet_id ) {
+			return null;
+		}
+
+		$event_codes = $integration->event_codes;
+
+		if ( ! $event_codes ) {
+			return null;
+		}
+
+		$source = $integration->source;
+
+		if ( ! $source ) {
+			return null;
+		}
+
+		$sheet = new GoogleSheet( $sheet_id );
+
+		return [
+			'event_codes' => $integration->event_codes,
+			'sheet'       => $sheet,
+			'sheet_id'    => $sheet_id,
+			'source'      => $source,
+		];
 	}
 }
