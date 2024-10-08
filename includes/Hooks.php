@@ -122,6 +122,12 @@ class Hooks {
 		if ( ! in_array( get_post_type( $post_id ), swise_get_supported_post_types(), true ) ) {
 			return;
 		}
+
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+
+		$this->process_post_action( 'wp_insert_post', $post );
 	}
 
 	/**
@@ -138,7 +144,8 @@ class Hooks {
 		if ( ! in_array( get_post_type( $post_id ), swise_get_supported_post_types(), true ) ) {
 			return;
 		}
-		error_log( 'swise_edit_post' );
+
+		$this->process_post_action( 'edit_post', $post );
 	}
 
 	/**
@@ -150,8 +157,12 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function wp_trash_post( $post_id ) {
-		error_log( 'swise_wp_trash_post' );
+	public function wp_trash_post( $post_id, $previous_status ) {
+		if ( ! in_array( get_post_type( $post_id ), swise_get_supported_post_types(), true ) ) {
+			return;
+		}
+
+		$this->process_post_action( 'wp_trash_post', get_post( $post_id ) );
 	}
 
 	/**
@@ -295,7 +306,7 @@ class Hooks {
 			}
 
 			$user_values = [];
-			$default_events = array_keys( $all_event_codes['user_register'] );
+			$default_events = array_keys( $all_event_codes[ $action ] );
 
 			foreach ( $default_events as $event ) {
 				if ( $event === 'user_id' ) {
@@ -332,6 +343,54 @@ class Hooks {
 							'hook'      => $data['source'],
 							'values'    => $values,
 							'sheet_id'  => $data['sheet_id'],
+						],
+					]
+				);
+			}
+		}
+	}
+
+	/**
+	 * Process the post action
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $action
+	 * @param WP_Post $post
+	 *
+	 * @return void
+	 */
+	private function process_post_action( $action, $post ) {
+		if ( ! $post instanceof WP_Post ) {
+			return;
+		}
+
+		$results = $this->get_results( $action );
+
+		if ( empty( $results ) ) {
+			return;
+		}
+
+		foreach ( $results as $result ) {
+			$data = $this->get_common_data( $result );
+			if ( ! $data ) {
+				continue;
+			}
+
+			// define hook name beforehand
+			$creation_hook = 'sheetwise_scheduled_' . $data['source'];
+
+			if ( false === as_next_scheduled_action( $creation_hook ) ) {
+				// enqueue the action
+				as_enqueue_async_action(
+					$creation_hook,
+					[
+						'args' => [
+							'type'        => 'post',
+							'hook'        => $data['source'],
+							'values'      => $post,
+							'sheet_id'    => $data['sheet_id'],
+							'event_codes' => $data['event_codes'],
 						],
 					]
 				);

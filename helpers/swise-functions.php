@@ -205,70 +205,19 @@ function swise_get_data_source_events() {
 			'wp_logout' => swise_get_common_user_data_source_events(),
 		]
 	);
-	$wp_insert_post    = apply_filters(
+	$wp_insert_post = apply_filters(
 		'data_source_event_wp_insert_post', [
-			'wp_insert_post' => [
-				'post_id'      => [
-					'label' => __( 'Post ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'post_title'   => [
-					'label' => __( 'Post Title', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'post_content' => [
-					'label' => __( 'Post Content', 'sheet-wise' ),
-					'type'  => 'textarea',
-				],
-				'post_date'    => [
-					'label' => __( 'Post Date', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-			],
+			'wp_insert_post' => swise_get_common_post_data_source_events(),
 		]
 	);
 	$edit_post         = apply_filters(
 		'data_source_event_edit_post', [
-			'edit_post' => [
-				'post_id'      => [
-					'label' => __( 'Post ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'post_title'   => [
-					'label' => __( 'Post Title', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'post_content' => [
-					'label' => __( 'Post Content', 'sheet-wise' ),
-					'type'  => 'textarea',
-				],
-				'post_date'    => [
-					'label' => __( 'Post Date', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-			],
+			'edit_post' => swise_get_common_post_data_source_events(),
 		]
 	);
 	$wp_trash_post     = apply_filters(
 		'data_source_event_wp_trash_post', [
-			'wp_trash_post' => [
-				'post_id'      => [
-					'label' => __( 'Post ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'post_title'   => [
-					'label' => __( 'Post Title', 'sheet-wise' ),
-					'type'  => 'text',
-				],
-				'post_content' => [
-					'label' => __( 'Post Content', 'sheet-wise' ),
-					'type'  => 'textarea',
-				],
-				'post_date'    => [
-					'label' => __( 'Post Date', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-			],
+			'wp_trash_post' => swise_get_common_post_data_source_events(),
 		]
 	);
 	$wp_insert_comment = apply_filters(
@@ -379,6 +328,56 @@ function swise_get_common_user_data_source_events() {
 			],
 			'display_name'    => [
 				'label' => __( 'Display Name', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+		]
+	);
+}
+
+/**
+ * Get the common post data source events
+ *
+ * @since 1.0.0
+ *
+ * @return array
+ */
+function swise_get_common_post_data_source_events() {
+	return apply_filters(
+		'swise_common_post_data_source_events', [
+			'ID'                    => [
+				'label' => __( 'Post ID', 'sheet-wise' ),
+				'type'  => 'number',
+			],
+			'post_title'            => [
+				'label' => __( 'Post Title', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+			'post_content'          => [
+				'label' => __( 'Post Content', 'sheet-wise' ),
+				'type'  => 'textarea',
+			],
+			'post_author'           => [
+				'label' => __( 'Post Author ID', 'sheet-wise' ),
+				'type'  => 'number',
+			],
+			'post_date'             => [
+				'label' => __( 'Post Date', 'sheet-wise' ),
+				'type'  => 'date-time',
+			],
+			'post_date_gmt'         => [
+				'label' => __( 'Post Date GMT', 'sheet-wise' ),
+				'type'  => 'date-time',
+			],
+			'post_excerpt'          => [
+				'label' => __( 'Post Excerpt', 'sheet-wise' ),
+				'type'  => 'textarea',
+			],
+			'post_status'           => [
+				'label' => __( 'Post Status', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+			'post_name'             => [
+				'label' => __( 'Post Name (Slug)', 'sheet-wise' ),
 				'type'  => 'text',
 			],
 		]
