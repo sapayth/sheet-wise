@@ -119,6 +119,10 @@ class Hooks {
 	 * @return void
 	 */
 	public function wp_insert_post( $post_id, $post, $update ) {
+		if ( $update ) {
+			return;
+		}
+
 		if ( ! in_array( get_post_type( $post_id ), swise_get_supported_post_types(), true ) ) {
 			return;
 		}
