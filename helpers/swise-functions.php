@@ -147,7 +147,7 @@ function swise_get_data_sources() {
 			'label'       => __( 'WordPress User Logout', 'sheet-wise' ),
 			'num_of_args' => 1,
 		],
-		'wp_insert_post'    => [
+		'save_post'    => [
 			'label'       => __( 'WordPress New Post', 'sheet-wise' ),
 			'num_of_args' => 3,
 		],
@@ -160,7 +160,7 @@ function swise_get_data_sources() {
 			'num_of_args' => 2,
 		],
 		'wp_insert_comment' => [
-			'label'       => __( 'WordPress Comment', 'sheet-wise' ),
+			'label'       => __( 'WordPress New Comment', 'sheet-wise' ),
 			'num_of_args' => 2,
 		],
 		'edit_comment'      => [
@@ -181,84 +181,57 @@ function swise_get_data_sources() {
  */
 function swise_get_data_source_events() {
 	$user_register     = apply_filters(
-		'data_source_event_user_register', [
+		'swise_data_source_event_user_register', [
 			'user_register' => swise_get_common_user_data_source_events(),
 		]
 	);
 	$update_user       = apply_filters(
-		'data_source_event_update_user', [
+		'swise_data_source_event_update_user', [
 			'wp_update_user' => swise_get_common_user_data_source_events(),
 		]
 	);
 	$delete_user       = apply_filters(
-		'data_source_event_delete_user', [
+		'swise_data_source_event_delete_user', [
 			'delete_user' => swise_get_common_user_data_source_events(),
 		]
 	);
 	$wp_login          = apply_filters(
-		'data_source_event_wp_login', [
+		'swise_data_source_event_wp_login', [
 			'wp_login' => swise_get_common_user_data_source_events(),
 		]
 	);
 	$wp_logout         = apply_filters(
-		'data_source_event_wp_logout', [
+		'swise_data_source_event_wp_logout', [
 			'wp_logout' => swise_get_common_user_data_source_events(),
 		]
 	);
-	$wp_insert_post = apply_filters(
-		'data_source_event_wp_insert_post', [
-			'wp_insert_post' => swise_get_common_post_data_source_events(),
+	$save_post    = apply_filters(
+		'swise_data_source_event_wp_insert_post', [
+			'save_post' => swise_get_common_post_data_source_events(),
 		]
 	);
 	$edit_post         = apply_filters(
-		'data_source_event_edit_post', [
+		'swise_data_source_event_edit_post', [
 			'edit_post' => swise_get_common_post_data_source_events(),
 		]
 	);
 	$wp_trash_post     = apply_filters(
-		'data_source_event_wp_trash_post', [
+		'swise_data_source_event_wp_trash_post', [
 			'wp_trash_post' => swise_get_common_post_data_source_events(),
 		]
 	);
 	$wp_insert_comment = apply_filters(
-		'data_source_event_wp_insert_comment', [
-			'wp_insert_comment' => [
-				'comment_id'      => [
-					'label' => __( 'Comment ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'comment_content' => [
-					'label' => __( 'Comment Content', 'sheet-wise' ),
-					'type'  => 'textarea',
-				],
-				'comment_date'    => [
-					'label' => __( 'Comment Date', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-			],
+		'swise_data_source_event_wp_insert_comment', [
+			'wp_insert_comment' => swise_get_common_comment_source_events(),
 		]
 	);
 	$edit_comment      = apply_filters(
-		'data_source_event_edit_comment', [
-			'edit_comment' => [
-				'comment_id'      => [
-					'label' => __( 'Comment ID', 'sheet-wise' ),
-					'type'  => 'number',
-				],
-				'comment_content' => [
-					'label' => __( 'Comment Content', 'sheet-wise' ),
-					'type'  => 'textarea',
-				],
-				'comment_date'    => [
-					'label' => __( 'Comment Date', 'sheet-wise' ),
-					'type'  => 'date-time',
-				],
-			],
+		'swise_data_source_event_edit_comment', [
+			'edit_comment' => swise_get_common_comment_source_events(),
 		]
 	);
-
 	$events = array_merge(
-		$user_register, $update_user, $delete_user, $wp_login, $wp_logout, $wp_insert_post, $edit_post, $wp_trash_post,
+		$user_register, $update_user, $delete_user, $wp_login, $wp_logout, $save_post, $edit_post, $wp_trash_post,
 		$wp_insert_comment, $edit_comment
 	);
 
@@ -379,6 +352,65 @@ function swise_get_common_post_data_source_events() {
 			'post_name'             => [
 				'label' => __( 'Post Name (Slug)', 'sheet-wise' ),
 				'type'  => 'text',
+			],
+		]
+	);
+}
+
+/**
+ * Get the common comment data source events
+ *
+ * @since 1.0.0
+ *
+ * @return array
+ */
+function swise_get_common_comment_source_events() {
+	return apply_filters(
+		'swise_common_comment_data_source_events',
+		[
+			'comment_ID'           => [
+				'label' => __( 'Comment ID', 'sheet-wise' ),
+				'type'  => 'number',
+			],
+			'comment_post_ID'      => [
+				'label' => __( 'Comment Post ID', 'sheet-wise' ),
+				'type'  => 'number',
+			],
+			'comment_author'       => [
+				'label' => __( 'Comment Author', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+			'comment_author_email' => [
+				'label' => __( 'Comment Author Email', 'sheet-wise' ),
+				'type'  => 'email',
+			],
+			'comment_author_url'   => [
+				'label' => __( 'Comment Author URL', 'sheet-wise' ),
+				'type'  => 'url',
+			],
+			'comment_author_IP'    => [
+				'label' => __( 'Comment Author IP', 'sheet-wise' ),
+				'type'  => 'text',
+			],
+			'comment_date'         => [
+				'label' => __( 'Comment Date', 'sheet-wise' ),
+				'type'  => 'date-time',
+			],
+			'comment_date_gmt'     => [
+				'label' => __( 'Comment Date GMT', 'sheet-wise' ),
+				'type'  => 'date-time',
+			],
+			'comment_content'      => [
+				'label' => __( 'Comment Content', 'sheet-wise' ),
+				'type'  => 'textarea',
+			],
+			'comment_approved'     => [
+				'label' => __( 'Comment Approved', 'sheet-wise' ),
+				'type'  => 'number',
+			],
+			'comment_parent'       => [
+				'label' => __( 'Comment Parent', 'sheet-wise' ),
+				'type'  => 'number',
 			],
 		]
 	);

@@ -4,6 +4,7 @@ namespace SheetWise;
 
 use SheetWise\Scoped\Google\Service\Sheets\ValueRange;
 use SheetWise\Admin\GoogleSheet;
+use WP_Comment;
 use WP_Post;
 use WP_User;
 
@@ -32,17 +33,49 @@ class Hooks {
 	 * @since 1.0.0
 	 *
 	 * @param int $user_id
+	 * @parem array $userdata
 	 *
 	 * @return void
 	 */
-	public function user_register( $user_id ) {
+	public function user_register( $user_id, $userdata ) {
 		$user = get_user_by( 'ID', $user_id );
+		$hook = 'user_register';
 
 		if ( ! $user ) {
 			return;
 		}
 
-		$this->process_user_action( 'user_register', $user );
+		$user_meta_keys = array_keys( get_user_meta( $user->data->ID ) );
+
+		$all_event_codes = swise_get_data_source_events();
+		if ( ! array_key_exists( $hook, $all_event_codes ) ) {
+			return;
+		}
+
+		$all_event_codes = swise_get_data_source_events();
+
+		$user_values = $this->get_user_values( $all_event_codes, $hook, $user, $user_meta_keys );
+
+		if ( empty( $user_values ) ) {
+			return;
+		}
+
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
+
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'user',
+					'hook'   => $hook,
+					'values' => $user_values,
+					'id'     => $user_id,
+				],
+			],
+			'swise_user',
+			true
+		);
 	}
 
 	/**
@@ -56,12 +89,42 @@ class Hooks {
 	 */
 	public function wp_update_user( $user_id, $userdata, $userdata_raw ) {
 		$user = get_user_by( 'ID', $user_id );
+		$hook = 'wp_update_user';
 
 		if ( ! $user ) {
 			return;
 		}
 
-		$this->process_user_action( 'wp_update_user', $user );
+		$user_meta_keys = array_keys( get_user_meta( $user->data->ID ) );
+
+		$all_event_codes = swise_get_data_source_events();
+
+		if ( ! array_key_exists( $hook, $all_event_codes ) ) {
+			return;
+		}
+
+		$user_values = $this->get_user_values( $all_event_codes, $hook, $user, $user_meta_keys );
+
+		if ( empty( $user_values ) ) {
+			return;
+		}
+
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
+
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'user',
+					'hook'   => $hook,
+					'values' => $user_values,
+					'id'     => $user_id,
+				],
+			],
+			'swise_user',
+			true
+		);
 	}
 
 	/**
@@ -75,8 +138,39 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function delete_user( $id, $reassign, $user ) {
-		$this->process_user_action( 'delete_user', $user );
+	public function delete_user( $user_id, $reassign, $user ) {
+		$hook = 'delete_user';
+
+		$user_meta_keys = array_keys( get_user_meta( $user->data->ID ) );
+
+		$all_event_codes = swise_get_data_source_events();
+
+		if ( ! array_key_exists( $hook, $all_event_codes ) ) {
+			return;
+		}
+
+		$user_values = $this->get_user_values( $all_event_codes, $hook, $user, $user_meta_keys );
+
+		if ( empty( $user_values ) ) {
+			return;
+		}
+
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
+
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'user',
+					'hook'   => $hook,
+					'values' => $user_values,
+					'id'     => $user_id,
+				],
+			],
+			'swise_user',
+			true
+		);
 	}
 
 	/**
@@ -90,7 +184,38 @@ class Hooks {
 	 * @return void
 	 */
 	public function wp_login( $user_login, $user ) {
-		$this->process_user_action( 'wp_login', $user );
+		$hook = 'wp_login';
+
+		$user_meta_keys = array_keys( get_user_meta( $user->data->ID ) );
+
+		$all_event_codes = swise_get_data_source_events();
+
+		if ( ! array_key_exists( $hook, $all_event_codes ) ) {
+			return;
+		}
+
+		$user_values = $this->get_user_values( $all_event_codes, $hook, $user, $user_meta_keys );
+
+		if ( empty( $user_values ) ) {
+			return;
+		}
+
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
+
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'user',
+					'hook'   => $hook,
+					'values' => $user_values,
+					'id'     => $user->ID,
+				],
+			],
+			'swise_user',
+			true
+		);
 	}
 
 	/**
@@ -104,11 +229,43 @@ class Hooks {
 	 */
 	public function wp_logout( $user_id ) {
 		$user = get_user_by( 'ID', $user_id );
-		$this->process_user_action( 'wp_logout', $user );
+
+		$hook = 'wp_logout';
+
+		$user_meta_keys = array_keys( get_user_meta( $user->data->ID ) );
+
+		$all_event_codes = swise_get_data_source_events();
+
+		if ( ! array_key_exists( $hook, $all_event_codes ) ) {
+			return;
+		}
+
+		$user_values = $this->get_user_values( $all_event_codes, $hook, $user, $user_meta_keys );
+
+		if ( empty( $user_values ) ) {
+			return;
+		}
+
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
+
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'user',
+					'hook'   => $hook,
+					'values' => $user_values,
+					'id'     => $user->ID,
+				],
+			],
+			'swise_user',
+			true
+		);
 	}
 
 	/**
-	 * Handle the wp_insert_post hook
+	 * Handle the save_post hook
 	 *
 	 * @since 1.0.0
 	 *
@@ -118,20 +275,45 @@ class Hooks {
 	 *
 	 * @return void
 	 */
-	public function wp_insert_post( $post_id, $post, $update ) {
-		if ( $update ) {
+	public function save_post( $post_id, $post, $update ) {
+		// Only want to set if this is a new post!
+		if ( 'auto-draft' === $post->post_status ) {
 			return;
 		}
 
+		// Avoid autosaves
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		// Check if this is the first published version of the post
+		if ( 'publish' !== $post->post_status && $post->post_date_gmt !== $post->post_modified_gmt ) {
+			return;
+		}
+
+		// Only set for our allowed post_type
 		if ( ! in_array( get_post_type( $post_id ), swise_get_supported_post_types(), true ) ) {
 			return;
 		}
 
-		if ( 'publish' !== $post->post_status ) {
-			return;
-		}
+		$hook = 'save_post';
 
-		$this->process_post_action( 'wp_insert_post', $post );
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
+
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'post',
+					'hook'   => $hook,
+					'values' => $post,
+					'id'     => $post_id,
+				],
+			],
+			'swise_post',
+			true
+		);
 	}
 
 	/**
@@ -145,11 +327,24 @@ class Hooks {
 	 * @return void
 	 */
 	public function edit_post( $post_id, $post ) {
-		if ( ! in_array( get_post_type( $post_id ), swise_get_supported_post_types(), true ) ) {
-			return;
-		}
+		$hook = 'edit_post';
 
-		$this->process_post_action( 'edit_post', $post );
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
+
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'post',
+					'hook'   => $hook,
+					'values' => $post,
+					'id'     => $post_id,
+				],
+			],
+			'swise_post',
+			true
+		);
 	}
 
 	/**
@@ -165,8 +360,30 @@ class Hooks {
 		if ( ! in_array( get_post_type( $post_id ), swise_get_supported_post_types(), true ) ) {
 			return;
 		}
+		$post = get_post( $post_id );
 
-		$this->process_post_action( 'wp_trash_post', get_post( $post_id ) );
+		if ( ! ( $post instanceof WP_Post ) ) {
+			return;
+		}
+
+		$hook = 'wp_trash_post';
+
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
+
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'post',
+					'hook'   => $hook,
+					'values' => $post,
+					'id'     => $post_id,
+				],
+			],
+			'swise_post',
+			true
+		);
 	}
 
 	/**
@@ -180,7 +397,24 @@ class Hooks {
 	 * @return void
 	 */
 	public function wp_insert_comment( $comment_id, $comment ) {
-		error_log( 'swise_wp_insert_comment' );
+		$hook = 'wp_insert_comment';
+
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
+
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'comment',
+					'hook'   => $hook,
+					'values' => $comment,
+					'id'     => $comment_id,
+				],
+			],
+			'swise_comment',
+			true
+		);
 	}
 
 	/**
@@ -189,216 +423,57 @@ class Hooks {
 	 * @since 1.0.0
 	 *
 	 * @param int $comment_id
-	 * @param WP_Comment $comment
+	 * @param array $data
 	 *
 	 * @return void
 	 */
-	public function edit_comment( $comment_id, $comment ) {
-		error_log( 'swise_edit_comment' );
-	}
+	public function edit_comment( $comment_id, $data ) {
+		$hook = 'edit_comment';
 
-	/**
-	 * Get the results
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array|object|null Database query results.
-	 */
-	private function get_results( $meta_value ) {
-		global $wpdb;
+		// define hook name beforehand
+		$creation_hook = 'sheetwise_scheduled_' . $hook;
 
-		return $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * FROM $wpdb->postmeta pm
-				INNER JOIN $wpdb->posts p ON pm.post_id = p.ID
-				WHERE pm.meta_key = %s AND pm.meta_value = %s AND p.post_status != %s",
-				swise_get_hook_meta_key(),
-				$meta_value,
-				'draft'
-			)
+		as_enqueue_async_action(
+			$creation_hook,
+			[
+				'args' => [
+					'type'   => 'comment',
+					'hook'   => $hook,
+					'values' => get_comment( $comment_id ),
+					'id'     => $comment_id,
+				],
+			],
+			'swise_comment',
+			true
 		);
 	}
 
 	/**
-	 * Get the common data
+	 * Get the user values
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param object $result
-	 *
-	 * @return null|array
-	 */
-	private function get_common_data( $result ) {
-		$integration = get_post( $result->post_id );
-
-		if ( ! $integration ) {
-			return null;
-		}
-
-		$integration = json_decode( $integration->post_content );
-
-		if ( ! $integration ) {
-			return null;
-		}
-
-		$sheet_id = $integration->sheet;
-
-		if ( ! $sheet_id ) {
-			return null;
-		}
-
-		$event_codes = $integration->event_codes;
-
-		if ( ! $event_codes ) {
-			return null;
-		}
-
-		$source = $integration->source;
-
-		if ( ! $source ) {
-			return null;
-		}
-
-		$sheet = new GoogleSheet( $sheet_id );
-
-		return [
-			'event_codes' => $integration->event_codes,
-			'sheet'       => $sheet,
-			'sheet_id'    => $sheet_id,
-			'source'      => $source,
-		];
-	}
-
-	/**
-	 * Process the user action
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $action
+	 * @param array $all_event_codes
+	 * @param string $hook
 	 * @param WP_User $user
+	 * @param array $user_meta_keys
 	 *
-	 * @return void
+	 * @return array
 	 */
-	private function process_user_action( $action, $user ) {
-		if ( ! $user instanceof WP_User ) {
-			return;
-		}
+	private function get_user_values( $all_event_codes, $hook, $user, $user_meta_keys ) {
+		$user_values = [];
+		$default_events = array_keys( $all_event_codes[ $hook ] );
 
-		$results = $this->get_results( $action );
-
-		if ( empty( $results ) ) {
-			return;
-		}
-
-		foreach ( $results as $result ) {
-			$data = $this->get_common_data( $result );
-			if ( ! $data ) {
-				continue;
-			}
-
-			$user_meta_keys = array_keys( get_user_meta( $user->data->ID ) );
-
-			$all_event_codes = swise_get_data_source_events();
-			if ( ! array_key_exists( $action, $all_event_codes ) ) {
-				continue;
-			}
-
-			$all_event_codes = swise_get_data_source_events();
-
-			if ( ! array_key_exists( $action, $all_event_codes ) ) {
-				continue;
-			}
-
-			$user_values = [];
-			$default_events = array_keys( $all_event_codes[ $action ] );
-
-			foreach ( $default_events as $event ) {
-				if ( $event === 'user_id' ) {
-					$user_values[] = $user->data->ID;
-				} elseif ( in_array( $event, $user_meta_keys, true ) ) {
-					$user_values[] = get_user_meta( $user->data->ID, $event, true );
-				} else {
-					$user_values[] = $user->data->$event;
-				}
-			}
-
-			// add `[[` and `]]` to the $default_events array
-			$default_events = array_map(
-				function ( $event ) {
-					return "[[$event]]";
-				}, $default_events
-			);
-
-			$values = [];
-
-			foreach ( $data['event_codes'] as $event_code ) {
-				$values[] = str_replace( $default_events, $user_values, $event_code );
-			}
-
-			// define hook name beforehand
-			$creation_hook = 'sheetwise_scheduled_' . $data['source'];
-
-			if ( false === as_next_scheduled_action( $creation_hook ) ) {
-				// enqueue the action
-				as_enqueue_async_action(
-					$creation_hook,
-					[
-						'args' => [
-							'hook'      => $data['source'],
-							'values'    => $values,
-							'sheet_id'  => $data['sheet_id'],
-						],
-					]
-				);
+		foreach ( $default_events as $event ) {
+			if ( $event === 'user_id' ) {
+				$user_values[ $event ] = $user->data->ID;
+			} elseif ( in_array( $event, $user_meta_keys, true ) ) {
+				$user_values[ $event ] = get_user_meta( $user->data->ID, $event, true );
+			} else {
+				$user_values[ $event ] = $user->data->$event;
 			}
 		}
-	}
 
-	/**
-	 * Process the post action
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $action
-	 * @param WP_Post $post
-	 *
-	 * @return void
-	 */
-	private function process_post_action( $action, $post ) {
-		if ( ! $post instanceof WP_Post ) {
-			return;
-		}
-
-		$results = $this->get_results( $action );
-
-		if ( empty( $results ) ) {
-			return;
-		}
-
-		foreach ( $results as $result ) {
-			$data = $this->get_common_data( $result );
-			if ( ! $data ) {
-				continue;
-			}
-
-			// define hook name beforehand
-			$creation_hook = 'sheetwise_scheduled_' . $data['source'];
-
-			if ( false === as_next_scheduled_action( $creation_hook ) ) {
-				// enqueue the action
-				as_enqueue_async_action(
-					$creation_hook,
-					[
-						'args' => [
-							'type'        => 'post',
-							'hook'        => $data['source'],
-							'values'      => $post,
-							'sheet_id'    => $data['sheet_id'],
-							'event_codes' => $data['event_codes'],
-						],
-					]
-				);
-			}
-		}
+		return $user_values;
 	}
 }
