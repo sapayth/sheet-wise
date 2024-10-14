@@ -79,7 +79,6 @@ class Menu {
 	 */
 	public function enqueue_common_scripts() {
 		wp_enqueue_style( 'swise-admin' );
-		// wp_enqueue_script( 'swise-admin' );
 
 		wp_localize_script(
 			'swise-admin',

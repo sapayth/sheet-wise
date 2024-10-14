@@ -103,6 +103,37 @@ export default function EditIntegration() {
         }
     }
 
+    useEffect( () => {
+        const fetchRows = async () => {
+            setRowLoading( true );
+            let path = '/wp-json/swise/v1/sheets/' + currentSheet + '/rows';
+
+            apiFetch( {
+                path: addQueryArgs( path ),
+                method: 'GET',
+                headers: {
+                    'X-WP-Nonce': swiseDashboard.nonce,
+                },
+            } )
+                .then( ( response ) => {
+                    if (response.success) {
+                        setRows( response.rows );
+                    }
+                } )
+                .catch( ( error ) => {
+                    console.log( error );
+                } )
+                .finally( () => {
+                    setRowLoading( false );
+                } );
+        };
+
+        if (currentSheet !== 'select') {
+            fetchRows();
+        }
+
+    }, [currentSheet] );
+
     const contentRef = useRef( null );
     const targetRef = useRef( null );
     const [targetHeight, setTargetHeight] = useState( 0 );

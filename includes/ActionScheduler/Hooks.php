@@ -1,4 +1,5 @@
 <?php
+
 namespace SheetWise\ActionScheduler;
 
 use SheetWise\Admin\GoogleSheet;
@@ -12,12 +13,20 @@ class Hooks {
 	 */
 	public function __construct() {
 		$actions = array_keys( swise_get_data_sources() );
-
 		foreach ( $actions as $action ) {
 			add_action( 'sheetwise_scheduled_' . $action, [ $this, 'process_data' ] );
 		}
 	}
 
+	/**
+	 * Process the data
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $args
+	 *
+	 * @return bool|\SheetWise\Scoped\Google\Service\Sheets\AppendValuesResponse
+	 */
 	public function process_data( $args ) {
 		if ( empty( $args['hook'] ) || empty( $args['values'] ) || empty( $args['type'] ) || empty( $args['id'] ) ) {
 			return false;
@@ -25,20 +34,21 @@ class Hooks {
 
 		$hook    = ! empty( $args['hook'] ) ? $args['hook'] : '';
 		$results = $this->get_results( $hook );
-
 		$values = ! empty( $args['values'] ) ? $args['values'] : [];
 
 		if ( empty( $results ) ) {
-			return [];
+			return false;
 		}
 
 		foreach ( $results as $result ) {
 			$data = $this->get_common_data( $result );
+
 			if ( ! $data ) {
 				continue;
 			}
 
 			$all_event_codes = swise_get_data_source_events();
+
 			if ( ! array_key_exists( $hook, $all_event_codes ) ) {
 				continue;
 			}
@@ -88,13 +98,17 @@ class Hooks {
 			$sheet_title = apply_filters( 'swise_sheet_title_' . $hook, 'Sheet1', $spreadsheet_id );
 
 			try {
-				return $service->spreadsheets_values->append( $spreadsheet_id, $sheet_title, $value_range, [ 'valueInputOption' => 'USER_ENTERED' ] );
+				return $service->spreadsheets_values->append(
+					$spreadsheet_id, $sheet_title, $value_range, [ 'valueInputOption' => 'USER_ENTERED' ]
+				);
 			} catch ( Exception $ex ) {
 				error_log( print_r( [ 'Failed to insert data', $ex->getErrors() ], true ) );
 
 				return false;
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -111,10 +125,8 @@ class Hooks {
 			$wpdb->prepare(
 				"SELECT * FROM $wpdb->postmeta pm
 				INNER JOIN $wpdb->posts p ON pm.post_id = p.ID
-				WHERE pm.meta_key = %s AND pm.meta_value = %s AND p.post_status != %s",
-				swise_get_hook_meta_key(),
-				$meta_value,
-				'draft'
+				WHERE pm.meta_key = %s AND pm.meta_value = %s AND p.post_status != %s", swise_get_hook_meta_key(),
+				$meta_value, 'draft'
 			)
 		);
 	}
@@ -130,35 +142,25 @@ class Hooks {
 	 */
 	private function get_common_data( $result ) {
 		$integration = get_post( $result->post_id );
-
 		if ( ! $integration ) {
 			return null;
 		}
-
 		$integration = json_decode( $integration->post_content );
-
 		if ( ! $integration ) {
 			return null;
 		}
-
 		$sheet_id = $integration->sheet;
-
 		if ( ! $sheet_id ) {
 			return null;
 		}
-
 		$event_codes = $integration->event_codes;
-
 		if ( ! $event_codes ) {
 			return null;
 		}
-
 		$source = $integration->source;
-
 		if ( ! $source ) {
 			return null;
 		}
-
 		$sheet = new GoogleSheet( $sheet_id );
 
 		return [

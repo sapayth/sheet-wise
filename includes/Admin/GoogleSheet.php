@@ -10,7 +10,7 @@ class GoogleSheet {
 	/**
 	 * The sheet id
 	 *
-	 * @since 1.1.1
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -19,7 +19,7 @@ class GoogleSheet {
 	/**
 	 * The sheet object
 	 *
-	 * @since 1.1.1
+	 * @since 1.0.0
 	 *
 	 * @var null
 	 */
@@ -28,7 +28,7 @@ class GoogleSheet {
 	/**
 	 * GoogleSheet constructor.
 	 *
-	 * @since 1.1.1
+	 * @since 1.0.0
 	 *
 	 * @param null $sheet_id
 	 */
@@ -42,7 +42,7 @@ class GoogleSheet {
 	/**
 	 * Get the sheet by id
 	 *
-	 * @since 1.1.1
+	 * @since 1.0.0
 	 *
 	 * @param $sheet_id
 	 *
@@ -66,6 +66,13 @@ class GoogleSheet {
 		return $response;
 	}
 
+	/**
+	 * Get the service
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Sheets
+	 */
 	public function get_service() {
 		return new Sheets( $this->get_client() );
 	}
@@ -73,7 +80,7 @@ class GoogleSheet {
 	/**
 	 * Creates and return the Google API Client. Returns null if failed to create the client
 	 *
-	 * @since 1.1.1
+	 * @since 1.0.0
 	 *
 	 * @param $scopes
 	 */
@@ -104,7 +111,7 @@ class GoogleSheet {
 	/**
 	 * Get all the spreadsheets of the user
 	 *
-	 * @since 1.1.1
+	 * @since 1.0.0
 	 *
 	 * @param array $args
 	 *
@@ -152,7 +159,7 @@ class GoogleSheet {
 	/**
 	 * Get the rows of a spreadsheet
 	 *
-	 * @since 1.1.1
+	 * @since 1.0.0
 	 *
 	 * @param string $spreadsheet_id
 	 * @param string $range

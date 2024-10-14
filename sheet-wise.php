@@ -34,11 +34,6 @@ final class SheetWise {
 	 * @var string
 	 */
 	private $min_php = '7.4';
-	private \SheetWise\Assets $assets;
-	private \SheetWise\Api $api;
-	private \SheetWise\Hooks $hooks;
-	private \SheetWise\ActionScheduler\Hooks $scheduled_hooks;
-	private \SheetWise\Admin $admin;
 
 	/**
 	 * Fire up the plugin
@@ -118,13 +113,13 @@ final class SheetWise {
 	 * @return void
 	 */
 	public function instantiate() {
-		$this->assets          = new SheetWise\Assets();
-		$this->api             = new SheetWise\Api();
-		$this->hooks           = new SheetWise\Hooks();
-		$this->scheduled_hooks = new SheetWise\ActionScheduler\Hooks();
+		$this->container['assets']          = new SheetWise\Assets();
+		$this->container['api']             = new SheetWise\Api();
+		$this->container['hooks']           = new SheetWise\Hooks();
+		$this->container['scheduled_hooks'] = new SheetWise\ActionScheduler\Hooks();
 
 		if ( is_admin() ) {
-			$this->admin = new SheetWise\Admin();
+			$this->container['admin'] = new SheetWise\Admin();
 		}
 	}
 
@@ -171,4 +166,5 @@ final class SheetWise {
 function swise() {
 	return SheetWise::instance();
 }
-return swise();
+
+swise();

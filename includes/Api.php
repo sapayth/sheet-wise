@@ -18,6 +18,13 @@ class Api {
 		add_action( 'rest_api_init', [ $this, 'init_api' ] );
 	}
 
+	/**
+	 * Initialize API
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	public function init_api() {
 		foreach ( $this->container as $class ) {
 			$object = new $class();

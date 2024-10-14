@@ -147,7 +147,7 @@ function swise_get_data_sources() {
 			'label'       => __( 'WordPress User Logout', 'sheet-wise' ),
 			'num_of_args' => 1,
 		],
-		'save_post'    => [
+		'save_post'         => [
 			'label'       => __( 'WordPress New Post', 'sheet-wise' ),
 			'num_of_args' => 3,
 		],
@@ -205,7 +205,7 @@ function swise_get_data_source_events() {
 			'wp_logout' => swise_get_common_user_data_source_events(),
 		]
 	);
-	$save_post    = apply_filters(
+	$save_post         = apply_filters(
 		'swise_data_source_event_wp_insert_post', [
 			'save_post' => swise_get_common_post_data_source_events(),
 		]
@@ -230,7 +230,7 @@ function swise_get_data_source_events() {
 			'edit_comment' => swise_get_common_comment_source_events(),
 		]
 	);
-	$events = array_merge(
+	$events            = array_merge(
 		$user_register, $update_user, $delete_user, $wp_login, $wp_logout, $save_post, $edit_post, $wp_trash_post,
 		$wp_insert_comment, $edit_comment
 	);
@@ -317,39 +317,39 @@ function swise_get_common_user_data_source_events() {
 function swise_get_common_post_data_source_events() {
 	return apply_filters(
 		'swise_common_post_data_source_events', [
-			'ID'                    => [
+			'ID'            => [
 				'label' => __( 'Post ID', 'sheet-wise' ),
 				'type'  => 'number',
 			],
-			'post_title'            => [
+			'post_title'    => [
 				'label' => __( 'Post Title', 'sheet-wise' ),
 				'type'  => 'text',
 			],
-			'post_content'          => [
+			'post_content'  => [
 				'label' => __( 'Post Content', 'sheet-wise' ),
 				'type'  => 'textarea',
 			],
-			'post_author'           => [
+			'post_author'   => [
 				'label' => __( 'Post Author ID', 'sheet-wise' ),
 				'type'  => 'number',
 			],
-			'post_date'             => [
+			'post_date'     => [
 				'label' => __( 'Post Date', 'sheet-wise' ),
 				'type'  => 'date-time',
 			],
-			'post_date_gmt'         => [
+			'post_date_gmt' => [
 				'label' => __( 'Post Date GMT', 'sheet-wise' ),
 				'type'  => 'date-time',
 			],
-			'post_excerpt'          => [
+			'post_excerpt'  => [
 				'label' => __( 'Post Excerpt', 'sheet-wise' ),
 				'type'  => 'textarea',
 			],
-			'post_status'           => [
+			'post_status'   => [
 				'label' => __( 'Post Status', 'sheet-wise' ),
 				'type'  => 'text',
 			],
-			'post_name'             => [
+			'post_name'     => [
 				'label' => __( 'Post Name (Slug)', 'sheet-wise' ),
 				'type'  => 'text',
 			],
@@ -366,8 +366,7 @@ function swise_get_common_post_data_source_events() {
  */
 function swise_get_common_comment_source_events() {
 	return apply_filters(
-		'swise_common_comment_data_source_events',
-		[
+		'swise_common_comment_data_source_events', [
 			'comment_ID'           => [
 				'label' => __( 'Comment ID', 'sheet-wise' ),
 				'type'  => 'number',
