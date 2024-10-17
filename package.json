@@ -7,7 +7,8 @@
     "start": "wp-scripts start --progress",
     "start:hot": "wp-scripts start --progress --hot",
     "build": "wp-scripts build --progress",
-    "packages-update": "wp-scripts packages-update"
+    "packages-update": "wp-scripts packages-update",
+    "zip": "./zip.sh"
   },
   "keywords": [],
   "author": "Sapayth",

@@ -18,6 +18,9 @@ export default function NewIntegration( {setActiveComponent} ) {
     const [loading, setLoading] = useState( true );
     const [rowLoading, setRowLoading] = useState( false );
     const [errors, setErrors] = useState( {} );
+    const [targetHeight, setTargetHeight] = useState( 0 );
+    const contentRef = useRef( null );
+    const targetRef = useRef( null );
 
     useEffect( () => {
         const fetchSheets = async () => {
@@ -77,10 +80,6 @@ export default function NewIntegration( {setActiveComponent} ) {
 
     }, [currentSheet] );
 
-    const contentRef = useRef( null );
-    const targetRef = useRef( null );
-    const [targetHeight, setTargetHeight] = useState( 0 );
-
     useEffect( () => {
         const handleResize = () => {
             const contentHeight = contentRef.current.offsetHeight + 300;
@@ -95,10 +94,6 @@ export default function NewIntegration( {setActiveComponent} ) {
             window.removeEventListener( 'resize', handleResize );
         };
     }, [] );
-
-    /*const sourceOptions = Object.keys( dataSource ).map( function ( key ) {
-        return <option value={key}>{dataSource[key].name}</option>
-    } );*/
 
     const RowLoading = () => {
         if (rowLoading) {

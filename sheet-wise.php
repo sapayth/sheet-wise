@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: SheetWise
+ * Plugin Name: Sheet Wise
  * Plugin URI: https://sapayth.com
  * Description: Sync and manage your Google Sheets spreadsheet through your WordPress site.
  * Show google sheet contents in your site.
