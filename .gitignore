@@ -17,3 +17,6 @@ config.json
 phpcs-report.txt
 /phpcs.xml
 .phpunit.result.cache
+
+# distribution files
+/dist/

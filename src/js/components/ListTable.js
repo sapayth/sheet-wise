@@ -2,7 +2,6 @@ import React, {useEffect, useState, useCallback} from 'react';
 import apiFetch from '@wordpress/api-fetch';
 import {addQueryArgs} from '@wordpress/url';
 import {__} from '@wordpress/i18n';
-import Navigation from './Navigation';
 import IntegrationRow from './integration/IntegrationRow';
 
 export default function ListTable() {
@@ -61,50 +60,8 @@ export default function ListTable() {
         } );
     }
 
-    const handleStatusChange = async ( event ) => {
-        // setLoading( true );
-        const id = event.target.getAttribute( 'data-id' );
-        const postStatus = event.target.getAttribute( 'data-post-status' );
-        let path = '/wp-json/swise/v1/integrations/' + id;
-
-        const data = {
-            value: postStatus === 'publish' ? 'draft' : 'publish',
-            id: id,
-            edit_single: true,
-            row_name: 'post_status',
-        };
-
-        await apiFetch( {
-            path: addQueryArgs( path ),
-            method: 'PATCH',
-            headers: {
-                'X-WP-Nonce': swiseDashboard.nonce,
-            },
-            body: JSON.stringify( data ),
-        } )
-        .then( ( response ) => {
-            if (response.success) {
-                // fetchIntegrations();
-
-                integrations.map( integration => {
-                    if ( integration.id === id ) {
-                        integration.post_status = postStatus === 'publish' ? 'draft' : 'publish';
-                    }
-                    return integration;
-                });
-            }
-        } )
-        .catch( ( error ) => {
-            console.log( error );
-        } )
-        .finally( () => {
-            // setLoading( false );
-        });
-    }
-
     return (
         <div className="swise-flow-root">
-            <Navigation />
             <div className="swise--mx-4 swise--my-2 swise-overflow-x-auto sm:swise--mx-6 lg:swise--mx-8">
                 {loading &&
                     <div className="swise-h-[calc(100vh-200px)] swise-flex swise-items-center swise-justify-center">
@@ -145,7 +102,6 @@ export default function ListTable() {
                                         key={integration.id}
                                         integration={integration}
                                         handleDelete={handleDelete}
-                                        handleStatusChange={handleStatusChange}
                                     />
                                 ))}
                                 </tbody>

@@ -18,6 +18,7 @@ class Dashboard {
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'swise-dashboard' );
 		wp_enqueue_style( 'swise-dashboard' );
+		wp_enqueue_style( 'wp-components' );
 
 		wp_localize_script(
 			'swise-dashboard',
