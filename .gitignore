@@ -20,3 +20,4 @@ phpcs-report.txt
 
 # distribution files
 /dist/
+/build/

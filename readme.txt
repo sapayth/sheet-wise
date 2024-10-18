@@ -1,61 +1,64 @@
-=== SheetWise ===
-Contributors: sapayth
-Tags: spreadsheet, data management, Google Sheets integration
+=== Sheet Wise ===
+Contributors: Sapayth H.
+Tags: Google Sheets, data sync, WordPress, Google API, automation, hooks
 Requires at least: 5.0
 Tested up to: 6.4
 Stable tag: 1.0.0
 Requires PHP: 7.2
-License: Apache-2.0
-License URI: https://www.apache.org/licenses/LICENSE-2.0
-
-SheetWise integrates Google Sheets with WordPress, allowing for seamless data management and display.
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
+**Sheet Wise** is a powerful WordPress plugin that enables seamless data synchronization between WordPress and Google Sheets. By using various hooks, it allows users to automatically send data from WordPress forms, custom posts, and other data sources directly to Google Sheets.
 
-SheetWise is a powerful WordPress plugin that bridges the gap between Google Sheets and your WordPress site. It enables you to easily import, manage, and display data from Google Sheets directly on your WordPress pages and posts.
+**Supported Hooks:**
+- **user_register**: Syncs data when a new user registers.
+- **wp_update_user**: Syncs data when a user profile is updated.
+- **delete_user**: Syncs data when a user is deleted.
+- **wp_login**: Syncs data when a user logs in.
+- **wp_logout**: Syncs data when a user logs out.
+- **save_post**: Syncs data when a new post is created.
+- **edit_post**: Syncs data when a post is edited.
+- **wp_trash_post**: Syncs data when a post is deleted (trashed).
+- **wp_insert_comment**: Syncs data when a new comment is added.
+- **edit_comment**: Syncs data when a comment edited.
 
-Key features:
-* Connect multiple Google Sheets to your WordPress site
-* Import and sync data automatically
-* Display sheet data in customizable tables and charts
-* Use shortcodes to embed sheet data anywhere on your site
-* Manage permissions and access control for sheet data
-
-Whether you're managing a small business inventory, organizing event registrations, or displaying dynamic data on your website, SheetWise simplifies the process and keeps your information up-to-date.
+**Key Features:**
+- Sync WordPress data with Google Sheets.
+- Support for different WordPress hooks for customizable data transfer.
+- Easy integration with Google API.
+- Automate data flow and management.
+- User-friendly interface for managing sync settings.
 
 == Installation ==
-
-1. Upload the `sheet-wise` folder to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Go to the SheetWise settings page to configure your Google Sheets API credentials
-4. Start connecting your sheets and using the plugin features!
+1. Upload the `sheet-wise` folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress plugins screen directly.
+2. Activate the plugin through the 'Plugins' screen in WordPress.
+3. Go to the `Sheet Wise` settings page to configure your Google API and select the hooks for syncing data.
 
 == Frequently Asked Questions ==
 
-= Do I need a Google account to use this plugin? =
+= What is the minimum PHP version required for Sheet Wise? =
+Sheet Wise requires PHP 7.2 or higher to function properly.
 
-Yes, you need a Google account to create and manage Google Sheets. You'll also need to set up API credentials in the Google Cloud Console.
+= How do I set up Google API integration? =
+After activating the plugin, navigate to the plugin settings page where you will find instructions to set up and link your Google API for seamless data transfer.
 
-= Is my sheet data secure? =
-
-SheetWise uses secure API connections to interact with your Google Sheets. However, please ensure that you manage access to your WordPress admin area and Google account responsibly.
+= Can I customize which data is sent to Google Sheets? =
+Yes, you can select from various hooks and customize which data to sync according to your needs.
 
 == Changelog ==
 
 = 1.0.0 =
 * Initial release
+* Sync data from WordPress to Google Sheets using various hooks
+* User-friendly settings page for API setup and sync management
 
 == Upgrade Notice ==
-
 = 1.0.0 =
-This is the first release of Sheet Wise. Enjoy seamless Google Sheets integration with your WordPress site!
+Initial release. Please ensure your PHP version is 7.2 or higher for compatibility.
 
-== Screenshots ==
+== Support ==
+For any support requests, please visit our support page or reach out to us through the WordPress support forums.
 
-1. SheetWise settings page
-2. Connecting a Google Sheet
-3. Displaying sheet data on a WordPress page
-
-== Additional Info ==
-
-For more information, please visit our [github](https://github.com/sapayth/sheet-wise).
+== Tags ==
+Google Sheets, data sync, WordPress plugin, automation, Google API, data management, PHP 7.2
