@@ -1147,6 +1147,9 @@ html {
 .swise-m-6 {
   margin: 1.5rem;
 }
+.swise-m-4 {
+  margin: 1rem;
+}
 .swise--mx-4 {
   margin-left: -1rem;
   margin-right: -1rem;
@@ -1154,6 +1157,14 @@ html {
 .swise--my-2 {
   margin-top: -0.5rem;
   margin-bottom: -0.5rem;
+}
+.swise-mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.swise-my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 .swise--mb-px {
   margin-bottom: -1px;
@@ -1184,6 +1195,9 @@ html {
 }
 .swise-mt-8 {
   margin-top: 2rem;
+}
+.swise-mt-\[20px\] {
+  margin-top: 20px;
 }
 .swise-block {
   display: block;
@@ -1330,6 +1344,9 @@ html {
 }
 .swise-p-4 {
   padding: 1rem;
+}
+.swise-p-8 {
+  padding: 2rem;
 }
 .swise-px-2 {
   padding-left: 0.5rem;

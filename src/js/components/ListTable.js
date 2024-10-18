@@ -61,54 +61,52 @@ export default function ListTable() {
     }
 
     return (
-        <div className="swise-flow-root">
-            <div className="swise--mx-4 swise--my-2 swise-overflow-x-auto sm:swise--mx-6 lg:swise--mx-8">
-                {loading &&
-                    <div className="swise-h-[calc(100vh-200px)] swise-flex swise-items-center swise-justify-center">
+        <div className="wrap wpuf-min-h-full">
+            {loading &&
+                <div className="swise-h-[calc(100vh-200px)] swise-flex swise-items-center swise-justify-center">
                         <span
                             className="swise-loading swise-loading-dots swise-loading-lg swise-text-purple-700"></span>
+                </div>
+            }
+            <div
+                className="swise-min-w-full swise-align-middle swise-mt-[20px]">
+                {!loading &&
+                    <div
+                        className="swise-overflow-hidden swise-shadow swise-ring-1 swise-ring-black swise-ring-opacity-5 sm:swise-rounded-lg">
+                        <table className="swise-min-w-full swise-divide-y swise-divide-gray-300">
+                            <thead className="swise-bg-gray-50">
+                            <tr>
+                                <th scope="col"
+                                    className="swise-py-3.5 swise-pl-4 swise-pr-3 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900 sm:swise-pl-6">
+                                    {__( 'Name', 'sheet-wise' )}
+                                </th>
+                                <th scope="col"
+                                    className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
+                                    {__( 'ID', 'sheet-wise' )}
+                                </th>
+                                <th scope="col"
+                                    className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
+                                    {__( 'Edit', 'sheet-wise' )}
+                                </th>
+                                <th scope="col"
+                                    className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
+                                    {__( 'Live/Pause', 'sheet-wise' )}
+                                </th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody className="swise-divide-y swise-divide-gray-200 swise-bg-white">
+                            {integrations.map( ( integration ) => (
+                                <IntegrationRow
+                                    key={integration.id}
+                                    integration={integration}
+                                    handleDelete={handleDelete}
+                                />
+                            ) )}
+                            </tbody>
+                        </table>
                     </div>
                 }
-                <div
-                    className="swise-inline-block swise-min-w-full swise-py-2 swise-align-middle sm:swise-px-6 lg:swise-px-8">
-                    {!loading &&
-                        <div
-                            className="swise-overflow-hidden swise-shadow swise-ring-1 swise-ring-black swise-ring-opacity-5 sm:swise-rounded-lg">
-                            <table className="swise-min-w-full swise-divide-y swise-divide-gray-300">
-                                <thead className="swise-bg-gray-50">
-                                <tr>
-                                    <th scope="col"
-                                        className="swise-py-3.5 swise-pl-4 swise-pr-3 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900 sm:swise-pl-6">
-                                        {__( 'Name', 'sheet-wise' )}
-                                    </th>
-                                    <th scope="col"
-                                        className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
-                                        {__( 'ID', 'sheet-wise' )}
-                                    </th>
-                                    <th scope="col"
-                                        className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
-                                        {__( 'Edit', 'sheet-wise' )}
-                                    </th>
-                                    <th scope="col"
-                                        className="swise-px-3 swise-py-3.5 swise-text-left swise-text-sm swise-font-semibold swise-text-gray-900">
-                                        {__( 'Live/Pause', 'sheet-wise' )}
-                                    </th>
-                                    <th scope="col"></th>
-                                </tr>
-                                </thead>
-                                <tbody className="swise-divide-y swise-divide-gray-200 swise-bg-white">
-                                {integrations.map((integration) => (
-                                    <IntegrationRow
-                                        key={integration.id}
-                                        integration={integration}
-                                        handleDelete={handleDelete}
-                                    />
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                </div>
             </div>
         </div>
     )

@@ -13,19 +13,17 @@ export default function Dashboard() {
     return (
         <>
             <Header version={swiseDashboard.version}/>
-            <div className="wrap">
-                <HashRouter>
-                    <Routes>
-                        <Route path={dashboard.home} element={<ListTable/>}/>
-                        <Route
-                            path={dashboard.integrations.create}
-                            element={<NewIntegration setActiveComponent={setActiveComponent}/>}/>
-                        <Route
-                            path={dashboard.integrations.edit}
-                            element={<EditIntegration />}/>
-                    </Routes>
-                </HashRouter>
-            </div>
+            <HashRouter>
+                <Routes>
+                    <Route path={dashboard.home} element={<ListTable/>}/>
+                    <Route
+                        path={dashboard.integrations.create}
+                        element={<NewIntegration setActiveComponent={setActiveComponent}/>}/>
+                    <Route
+                        path={dashboard.integrations.edit}
+                        element={<EditIntegration />}/>
+                </Routes>
+            </HashRouter>
         </>
     )
 }
