@@ -11,8 +11,6 @@ export default function NewIntegration( {setActiveComponent} ) {
     const [rows, setRows] = useState( [] );
     const [currentSheet, setCurrentSheet] = useState( 'select' );
     const [currentSource, setCurrentSource] = useState( 'select' );
-    const [currentOption, setCurrentOption] = useState( 'select' );
-    const [eventCode, setEventCode] = useState( '' );
     const [eventCodeValues, setEventCodeValues] = useState( [] );
     const [dataSourceValues, setDataSourceValues] = useState( [] );
     const [loading, setLoading] = useState( true );

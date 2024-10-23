@@ -131,7 +131,7 @@ class Integrations extends Swise_REST_Controller {
 			return $this->error_response( new \WP_Error( 'invalid_json', 'Invalid JSON' ) );
 		}
 
-		if ( $integration->edit_single ) {
+		if ( property_exists( $integration, 'edit_single' ) && $integration->edit_single ) {
 			if ( ! $integration->id || ! $integration->row_name || ! $integration->value ) {
 				return $this->error_response( new \WP_Error( 'invalid_json', 'Invalid JSON' ) );
 			}
