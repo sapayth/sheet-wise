@@ -45,7 +45,6 @@
         "humbug/php-scoper": "dev-main"
     },
     "require": {
-        "wedevs/wp-utils": "dev-main",
         "google/apiclient": "^2.15.0",
         "woocommerce/action-scheduler": "^3.4.2",
         "deliciousbrains/wp-background-processing": "dev-master"

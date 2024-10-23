@@ -2,8 +2,6 @@
 
 namespace SheetWise;
 
-use SheetWise\Scoped\Google\Service\Sheets\ValueRange;
-use SheetWise\Admin\GoogleSheet;
 use WP_Comment;
 use WP_Post;
 use WP_User;

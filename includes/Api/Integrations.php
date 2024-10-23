@@ -2,7 +2,6 @@
 
 namespace SheetWise\Api;
 
-use SheetWise\Admin\GoogleSheet;
 use WP_REST_Server;
 
 class Integrations extends Swise_REST_Controller {
@@ -334,6 +333,17 @@ class Integrations extends Swise_REST_Controller {
 		);
 	}
 
+	/**
+	 * Edit a single row
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int    $integration_id
+	 * @param string $row_name
+	 * @param string $value
+	 *
+	 * @return \WP_REST_Response
+	 */
 	private function edit_single_row( $integration_id, $row_name, $value ) {
 		$integration_id = wp_update_post(
 			[

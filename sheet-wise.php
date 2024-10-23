@@ -18,15 +18,23 @@ if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use WeDevs\WpUtils\ContainerTrait;
-use WeDevs\WpUtils\SingletonTrait;
-
 /**
  * Main bootstrap class for SheetWise
  */
 final class SheetWise {
-	use SingletonTrait;
-	use ContainerTrait;
+	/**
+	 * Container for dynamic properties.
+	 *
+	 * @var array
+	 */
+	protected $container = [];
+
+	/**
+	 * Singleton instance
+	 *
+	 * @var self
+	 */
+	private static $instance;
 
 	/**
 	 * Minimum PHP version required
@@ -45,15 +53,19 @@ final class SheetWise {
 
 		$this->define_constants();
 
-		// @todo:register activation hook
-		// @todo:register deactivation hook
-
 		$this->includes();
 		$this->init_hooks();
 
 		do_action( 'swise_loaded' );
 	}
 
+	/**
+	 * Define the constants
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
 	public function define_constants() {
 		$this->define( 'SWISE_VERSION', '1.0.0' );
 		$this->define( 'SWISE_FILE', __FILE__ );
@@ -153,6 +165,46 @@ final class SheetWise {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get the singleton instance
+	 *
+	 * @return self
+	 */
+	public static function instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+	/**
+	 * Get dynamic property from container.
+	 *
+	 * @param string $name
+	 *
+	 * @return mixed
+	 */
+	public function __get( $name ) {
+		if ( isset( $this->container[ $name ] ) ) {
+			return $this->container[ $name ];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Set dynamic property to container.
+	 *
+	 * @param string $name
+	 * @param mixed  $value
+	 *
+	 * @return void
+	 */
+	public function __set( $name, $value ) {
+		$this->container[ $name ] = $value;
 	}
 }
 

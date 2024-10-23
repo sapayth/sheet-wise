@@ -5,11 +5,14 @@ namespace SheetWise;
 use SheetWise\Api\Integrations;
 use SheetWise\Api\Settings;
 use SheetWise\Api\Sheet;
-use WeDevs\WpUtils\ContainerTrait;
+use SheetWise\Traits\ContainerTrait;
 
 class Api {
 	use ContainerTrait;
 
+	/**
+	 * Api constructor.
+	 */
 	public function __construct() {
 		$this->container['settings']     = new Settings();
 		$this->container['sheet']        = new Sheet();

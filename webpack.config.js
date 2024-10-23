@@ -1,135 +1,91 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 const entryPoints = {
-    'settings-css': './src/css/settings.css',
-    'admin-css': './src/css/admin.css',
-    'settings-js': './src/js/settings.js',
-    'dashboard-js': './src/js/dashboard.js',
+    'settings': './src/js/settings.js',
+    'dashboard': './src/js/dashboard.js',
 };
 
-const updatedConfig = {
-    mode: defaultConfig.mode,
-    entry: entryPoints,
+module.exports = {
+    entry: {
+        'settings': './src/js/settings.js',
+        'dashboard': './src/js/dashboard.js',
+    },
     output: {
-        path: path.resolve(__dirname, './assets/js'),
-        filename: '[name].js',
-        clean: true,
+        path: path.resolve(__dirname, 'assets'),
+        filename: 'js/[name].js',
     },
-
-    externals: {
-        jquery: 'jQuery',
-    },
-
     plugins: [
-        new MiniCssExtractPlugin(
-            {
-                filename: ( { chunk } ) => {
-                    if ( chunk.name.match( /\/modules\// ) ) {
-                        return `${ chunk.name.replace( '/js/', '/css/' ) }.css`;
-                    }
-
-                    return '../css/[name].css';
-                },
-            }
-        ),
+        new MiniCssExtractPlugin({
+            filename: 'css/[name].css',
+        }),
     ],
-
     module: {
         rules: [
             {
-                test: /\.(j|t)sx?$/,
+                test: /\.js$/,
                 exclude: /node_modules/,
-                use: [
-                    {
-                        loader: require.resolve( 'babel-loader' ),
-                        options: {
-                            // Babel uses a directory within local node_modules
-                            // by default. Use the environment variable option
-                            // to enable more persistent caching.
-                            cacheDirectory:
-                                process.env.BABEL_CACHE_DIRECTORY || true,
-                            babelrc: false,
-                            configFile: false,
-                            presets: [
-                                require.resolve(
-                                    '@wordpress/babel-preset-default'
-                                ),
-                            ],
-                        },
-                    },
-                ],
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@wordpress/default']
+                    }
+                }
             },
             {
-                test: /\.(sass|scss|css)$/i,
+                test: /\.(sa|sc|c)ss$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    {
-                        loader: "css-loader",
-                        options: {
-                            sourceMap: ! isProduction,
-                        },
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            postcssOptions: {
-                                plugins: [
-                                    [
-                                        "autoprefixer"
-                                    ],
-                                ],
-                            }
-                        },
-                    },
-                    {
-                        loader: "sass-loader",
-                        options: {
-                            sourceMap: ! isProduction,
-                        },
-                    },
-                ],
-            },
-            {
-                test: /\.(bmp|png|jpe?g|gif|webp)$/i,
-                type: 'asset/resource',
-                generator: {
-                    filename: '../images/[name][ext][query]'
-                },
-            },
-            {
-                test: /\.svg/,
-                type: 'asset/inline'
-            },
-            {
-                test: /\.(woff|woff2|eot|ttf|otf)$/i,
-                type: 'asset/resource',
-                generator: {
-                    filename: '../font/[name].[ext]',
-                },
-            },
+                    'css-loader',
+                    'postcss-loader',
+                ]
+            }
         ]
     },
-}
-
-if (!isProduction) {
-    updatedConfig.devServer = {
-        devMiddleware: {
-            writeToDisk: true,
-        },
-        allowedHosts: 'all',
-        host: 'localhost',
-        port: 8887,
-        proxy: {
-            '/assets/dist': {
-                pathRewrite: {
-                    '^/assets/dist': '',
+    optimization: {
+        minimize: isProduction,
+        minimizer: [
+            // For JavaScript
+            new TerserPlugin({
+                test: /\.js(\?.*)?$/i,
+                parallel: true,
+                extractComments: false,
+                terserOptions: {
+                    format: {
+                        comments: false,
+                    },
                 },
+            }),
+            // For CSS
+            new CssMinimizerPlugin()
+        ],
+    },
+    // Generate unminified versions in production
+    ...(isProduction && {
+        entry: {
+            'settings': './src/js/settings.js',
+            'dashboard': './src/js/dashboard.js',
+        },
+        output: {
+            path: path.resolve(__dirname, 'assets'),
+            filename: (pathData) => {
+                return pathData.chunk.name.includes('.min')
+                    ? 'js/[name].js'
+                    : 'js/[name].min.js';
             },
         },
-    };
-}
-
-module.exports = updatedConfig;
+        plugins: [
+            new MiniCssExtractPlugin({
+                filename: (pathData) => {
+                    return pathData.chunk.name.includes('.min')
+                        ? 'css/[name].css'
+                        : 'css/[name].min.css';
+                },
+            }),
+        ],
+    })
+};

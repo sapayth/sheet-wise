@@ -37,7 +37,7 @@ export default function Navigation() {
     }
 
     return (
-        <div className="swise-mb-4">
+        <div className="wrap">
             <h1 className="wp-heading-inline">
                 {title()}
             </h1>
