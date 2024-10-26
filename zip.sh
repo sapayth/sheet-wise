@@ -29,7 +29,7 @@ rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
 
 status "Generating build..."
-npm run build
+npm run build:production && npm run build:dev
 
 status "Copying files to build directory..."
 FILES_AND_DIRS=(

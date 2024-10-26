@@ -6,7 +6,8 @@
   "scripts": {
     "start": "wp-scripts start --progress",
     "start:hot": "wp-scripts start --progress --hot",
-    "build": "wp-scripts build --progress",
+    "build:production": "NODE_ENV=production wp-scripts build --progress",
+    "build:dev": "NODE_ENV=dev wp-scripts build --progress",
     "packages-update": "wp-scripts packages-update",
     "zip": "./zip.sh"
   },
@@ -32,6 +33,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.5",
     "@wordpress/api-fetch": "^7.4.0",
     "@wordpress/components": "^25.8.0",
     "react-router-dom": "^6.26.1"

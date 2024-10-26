@@ -1,29 +1,24 @@
-const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
-
 const entryPoints = {
-    'settings': './src/js/settings.js',
-    'dashboard': './src/js/dashboard.js',
+    dashboard: './src/js/dashboard.js',
+    settings: './src/js/settings.js',
 };
 
-module.exports = {
-    entry: {
-        'settings': './src/js/settings.js',
-        'dashboard': './src/js/dashboard.js',
-    },
-    output: {
-        path: path.resolve(__dirname, 'assets'),
-        filename: 'js/[name].js',
-    },
+const createConfig = (isProduction) => ({
     plugins: [
         new MiniCssExtractPlugin({
-            filename: 'css/[name].css',
+            filename: `css/[name]${isProduction ? '.min' : ''}.css`,
         }),
     ],
+    entry: entryPoints,
+    output: {
+        filename: `js/[name]${isProduction ? '.min' : ''}.js`,
+        path: __dirname + '/assets',
+    },
     module: {
         rules: [
             {
@@ -49,7 +44,6 @@ module.exports = {
     optimization: {
         minimize: isProduction,
         minimizer: [
-            // For JavaScript
             new TerserPlugin({
                 test: /\.js(\?.*)?$/i,
                 parallel: true,
@@ -60,32 +54,12 @@ module.exports = {
                     },
                 },
             }),
-            // For CSS
             new CssMinimizerPlugin()
         ],
     },
-    // Generate unminified versions in production
-    ...(isProduction && {
-        entry: {
-            'settings': './src/js/settings.js',
-            'dashboard': './src/js/dashboard.js',
-        },
-        output: {
-            path: path.resolve(__dirname, 'assets'),
-            filename: (pathData) => {
-                return pathData.chunk.name.includes('.min')
-                    ? 'js/[name].js'
-                    : 'js/[name].min.js';
-            },
-        },
-        plugins: [
-            new MiniCssExtractPlugin({
-                filename: (pathData) => {
-                    return pathData.chunk.name.includes('.min')
-                        ? 'css/[name].css'
-                        : 'css/[name].min.css';
-                },
-            }),
-        ],
-    })
-};
+});
+
+// Export array of configurations
+module.exports = [
+    createConfig(isProduction)
+];

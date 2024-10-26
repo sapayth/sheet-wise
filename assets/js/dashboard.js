@@ -20048,7 +20048,53 @@ function Dashboard() {
     setActiveComponent = _useState2[1];
   return (0,react.createElement)(react.Fragment, null, (0,react.createElement)(Header, {
     version: swiseDashboard.version
-  }), (0,react.createElement)(HashRouter, null, (0,react.createElement)(Routes, null, (0,react.createElement)(Route, {
+  }), (0,react.createElement)("div", {
+    "aria-live": "assertive",
+    className: "swise-pointer-events-none swise-fixed swise-inset-0 swise-flex swise-items-end swise-px-4 swise-py-6 sm:swise-items-start sm:swise-p-6"
+  }, (0,react.createElement)("div", {
+    className: "swise-flex swise-w-full swise-flex-col swise-items-center swise-space-y-4 sm:swise-items-end"
+  }, (0,react.createElement)("div", {
+    className: "swise-pointer-events-auto swise-w-full swise-max-w-sm swise-overflow-hidden swise-rounded-lg swise-bg-white swise-shadow-lg swise-ring-1 swise-ring-black swise-ring-opacity-5"
+  }, (0,react.createElement)("div", {
+    className: "swise-p-4"
+  }, (0,react.createElement)("div", {
+    className: "swise-flex swise-items-start"
+  }, (0,react.createElement)("div", {
+    className: "swise-flex-shrink-0"
+  }, (0,react.createElement)("svg", {
+    className: "swise-h-6 swise-w-6 swise-text-green-400",
+    fill: "none",
+    viewBox: "0 0 24 24",
+    strokeWidth: "1.5",
+    stroke: "currentColor",
+    "aria-hidden": "true",
+    "data-slot": "icon"
+  }, (0,react.createElement)("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    d: "M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+  }))), (0,react.createElement)("div", {
+    className: "swise-ml-3 swise-w-0 swise-flex-1 swise-pt-0.5"
+  }, (0,react.createElement)("p", {
+    className: "swise-text-sm swise-font-medium swise-text-gray-900"
+  }, "Successfully saved!"), (0,react.createElement)("p", {
+    className: "swise-mt-1 swise-text-sm swise-text-gray-500"
+  }, "Anyone with a link can now view this file.")), (0,react.createElement)("div", {
+    className: "swise-ml-4 swise-flex swise-flex-shrink-0"
+  }, (0,react.createElement)("button", {
+    type: "button",
+    className: "swise-inline-flex swise-rounded-md swise-bg-white swise-text-gray-400 hover:swise-text-gray-500 focus:swise-outline-none focus:swise-ring-2 focus:swise-ring-indigo-500 focus:swise-ring-offset-2"
+  }, (0,react.createElement)("span", {
+    className: "swise-sr-only"
+  }, "Close"), (0,react.createElement)("svg", {
+    className: "swise-h-5 swise-w-5",
+    viewBox: "0 0 20 20",
+    fill: "currentColor",
+    "aria-hidden": "true",
+    "data-slot": "icon"
+  }, (0,react.createElement)("path", {
+    d: "M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
+  }))))))))), (0,react.createElement)(HashRouter, null, (0,react.createElement)(Routes, null, (0,react.createElement)(Route, {
     path: routes_dashboard.home,
     element: (0,react.createElement)(ListTable, null)
   }), (0,react.createElement)(Route, {
