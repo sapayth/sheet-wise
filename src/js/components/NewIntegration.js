@@ -3,17 +3,17 @@ import apiFetch from '@wordpress/api-fetch';
 import {addQueryArgs} from '@wordpress/url';
 
 import {__} from '@wordpress/i18n';
-import Navigation from './Navigation';
+import dashboard from '../routes/dashboard';
 
-export default function NewIntegration( {setActiveComponent} ) {
+export default function NewIntegration( {setNotices} ) {
     const dataSource = swiseDashboard.dataSources;
     const [sheets, setSheets] = useState( [] );
     const [rows, setRows] = useState( [] );
+    const [title, setTitle] = useState( '' );
     const [currentSheet, setCurrentSheet] = useState( 'select' );
     const [currentSource, setCurrentSource] = useState( 'select' );
     const [eventCodeValues, setEventCodeValues] = useState( [] );
     const [dataSourceValues, setDataSourceValues] = useState( [] );
-    const [loading, setLoading] = useState( true );
     const [rowLoading, setRowLoading] = useState( false );
     const [errors, setErrors] = useState( {} );
     const [targetHeight, setTargetHeight] = useState( 0 );
@@ -163,7 +163,13 @@ export default function NewIntegration( {setActiveComponent} ) {
         } )
             .then( ( response ) => {
                 if (response.code === 200) {
-                    setActiveComponent( 'ListTable' );
+                    setNotices( [
+                        {
+                            type: 'success',
+                            message: response.message,
+                        }
+                    ] );
+                    navigate( dashboard.home );
                 }
             } )
             .catch( ( error ) => {
@@ -184,7 +190,6 @@ export default function NewIntegration( {setActiveComponent} ) {
 
     return (
         <>
-            <Navigation/>
             <div ref={contentRef}>
                 <table
                     className="swise-shadow-md sm:swise-rounded-lg swise-w-full swise-mt-8 swise-text-sm swise-text-left swise-text-gray-500">
@@ -202,6 +207,8 @@ export default function NewIntegration( {setActiveComponent} ) {
                                         '!swise-border-gray-300 swise-text-gray-900': !errors.title
                                     },
                                     'swise-font-medium swise-w-full swise-max-w-full' )}
+                                value={title}
+                                onChange={( e ) => setTitle( e.target.value )}
                                 type="text"/>
                             {errors.title &&
                                 <p

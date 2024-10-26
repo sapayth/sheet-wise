@@ -358,6 +358,7 @@ class Integrations extends Swise_REST_Controller {
 
 		return rest_ensure_response(
 			[
+				'success' => true,
 				'code'    => 200,
 				'message' => sprintf(
 					// translators: %s: DB row name

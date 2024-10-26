@@ -2,11 +2,10 @@ import {useNavigate, useParams} from 'react-router-dom';
 import React, {useEffect, useRef, useState} from 'react';
 import apiFetch from '@wordpress/api-fetch';
 import {addQueryArgs} from '@wordpress/url';
-import Navigation from './Navigation';
 import {__} from '@wordpress/i18n';
 import dashboard from '../routes/dashboard';
 
-export default function EditIntegration() {
+export default function EditIntegration( {setNotices} ) {
     const {id} = useParams();
     const dataSource = swiseDashboard.dataSources;
     const [integration, setIntegration] = useState( [] );
@@ -218,6 +217,12 @@ export default function EditIntegration() {
         } )
             .then( ( response ) => {
                 if (response.code === 200) {
+                    setNotices( [
+                        {
+                            type: 'success',
+                            message: response.message,
+                        }
+                    ] );
                     navigate( dashboard.home );
                 }
             } )
@@ -258,7 +263,6 @@ export default function EditIntegration() {
 
     return (
         <>
-            <Navigation/>
             <div ref={contentRef}>
                 <table
                     className="swise-shadow-md sm:swise-rounded-lg swise-w-full swise-mt-8 swise-text-sm swise-text-left swise-text-gray-500">

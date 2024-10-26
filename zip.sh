@@ -37,7 +37,6 @@ FILES_AND_DIRS=(
     "assets"
     "helpers"
     "includes"
-    "libs"
     "scoped"
 )
 

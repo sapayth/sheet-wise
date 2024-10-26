@@ -4,7 +4,7 @@ import { ToggleControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import {addQueryArgs} from '@wordpress/url';
 
-export default function IntegrationRow( {integration, handleDelete} ) {
+export default function IntegrationRow( {integration, handleDelete, setNotices} ) {
     const [status, setStatus] = useState( integration.post_status === 'publish' );
 
     const handleStatusChange = async ( id, postStatus ) => {
@@ -28,6 +28,19 @@ export default function IntegrationRow( {integration, handleDelete} ) {
             .then( ( response ) => {
                 if ( response.success ) {
                     setStatus( postStatus === 'publish' );
+                    setNotices( [
+                        {
+                            type: 'success',
+                            message: response.message,
+                        },
+                    ] );
+                } else {
+                    setNotices( [
+                        {
+                            type: 'error',
+                            message: response.message,
+                        },
+                    ] );
                 }
             } )
             .catch( ( error ) => {

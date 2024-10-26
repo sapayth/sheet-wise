@@ -4,11 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "wp-scripts start --progress",
-    "start:hot": "wp-scripts start --progress --hot",
     "build:production": "NODE_ENV=production wp-scripts build --progress",
     "build:dev": "NODE_ENV=dev wp-scripts build --progress",
     "packages-update": "wp-scripts packages-update",
+    "watch": "NODE_ENV=development wp-scripts start --progress",
     "zip": "./zip.sh"
   },
   "keywords": [],
