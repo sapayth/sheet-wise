@@ -8,7 +8,10 @@ import dashboard from '../routes/dashboard';
 export default function EditIntegration( {setNotices} ) {
     const {id} = useParams();
     const dataSource = swiseDashboard.dataSources;
-    const [integration, setIntegration] = useState( [] );
+    const [integration, setIntegration] = useState( {
+        post_title: '',
+        ID: id
+    } );
     const [sheets, setSheets] = useState( [] );
     const [rows, setRows] = useState( [] );
     const [currentSheet, setCurrentSheet] = useState( 'select' );
