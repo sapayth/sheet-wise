@@ -2,9 +2,9 @@
 
 namespace SheetWise\Admin;
 
-use SheetWise\Scoped\Google\Client;
-use SheetWise\Scoped\Google\Service\Drive;
-use SheetWise\Scoped\Google\Service\Sheets;
+use SheetWise\ThirdParty\Google\Client;
+use SheetWise\ThirdParty\Google\Service\Drive;
+use SheetWise\ThirdParty\Google\Service\Sheets;
 
 class GoogleSheet {
 	/**
@@ -59,7 +59,7 @@ class GoogleSheet {
 
 		$response = $service->spreadsheets->get( $sheet_id );
 
-		if ( ! is_a( $response, 'SheetWise\Scoped\Google\Service\Sheets\Spreadsheet' ) ) {
+		if ( ! is_a( $response, 'SheetWise\ThirdParty\Google\Service\Sheets\Spreadsheet' ) ) {
 			return null;
 		}
 
@@ -135,7 +135,7 @@ class GoogleSheet {
 		$service    = new Drive( $client );
 		$list_files = $service->files->listFiles( $args );
 
-		if ( ! is_a( $list_files, 'SheetWise\Scoped\Google\Service\Drive\FileList' ) ) {
+		if ( ! is_a( $list_files, 'SheetWise\ThirdParty\Google\Service\Drive\FileList' ) ) {
 			return $list;
 		}
 
@@ -177,7 +177,7 @@ class GoogleSheet {
 
 		$response = $service->spreadsheets_values->get( $spreadsheet_id, $range );
 
-		if ( ! is_a( $response, 'SheetWise\Scoped\Google\Service\Sheets\ValueRange' ) ) {
+		if ( ! is_a( $response, 'SheetWise\ThirdParty\Google\Service\Sheets\ValueRange' ) ) {
 			return [];
 		}
 

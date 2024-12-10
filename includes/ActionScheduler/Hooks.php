@@ -3,8 +3,8 @@
 namespace SheetWise\ActionScheduler;
 
 use SheetWise\Admin\GoogleSheet;
-use SheetWise\Scoped\Google\Service\Exception;
-use SheetWise\Scoped\Google\Service\Sheets\ValueRange;
+use SheetWise\ThirdParty\Google\Service\Exception;
+use SheetWise\ThirdParty\Google\Service\Sheets\ValueRange;
 
 class Hooks {
 
@@ -25,7 +25,7 @@ class Hooks {
 	 *
 	 * @param array $args
 	 *
-	 * @return bool|\SheetWise\Scoped\Google\Service\Sheets\AppendValuesResponse
+	 * @return bool|\SheetWise\ThirdParty\Google\Service\Sheets\AppendValuesResponse
 	 */
 	public function process_data( $args ) {
 		if ( empty( $args['hook'] ) || empty( $args['values'] ) || empty( $args['type'] ) || empty( $args['id'] ) ) {

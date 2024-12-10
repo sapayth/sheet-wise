@@ -23,9 +23,11 @@ class Settings {
 			'swise-settings',
 			'swiseSettings',
 			[
-				'nonce'   => wp_create_nonce( 'wp_rest' ),
-				'version' => SWISE_VERSION,
-				'restURL' => rest_url( 'swise/v1' ),
+				'nonce'    => wp_create_nonce( 'wp_rest' ),
+				'version'  => SWISE_VERSION,
+				'restURL'  => rest_url( 'swise/v1' ),
+				'pageURL'  => admin_url( 'admin.php?page=sheet-wise-settings' ),
+				'assetURL' => SWISE_ASSET_URL,
 			]
 		);
 	}

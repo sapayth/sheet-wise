@@ -39,7 +39,7 @@ class Menu {
 			__( 'Settings', 'sheet-wise' ),
 			__( 'Settings', 'sheet-wise' ),
 			$capability,
-			'settings',
+			'sheet-wise-settings',
 			[ $this, 'render_settings' ]
 		);
 

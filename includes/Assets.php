@@ -77,13 +77,13 @@ class Assets {
 	public function get_styles() {
 		return [
 			'settings' => [
-				'src' => SWISE_ASSET_URI . '/css/settings' . $this->suffix . '.css',
+				'src' => SWISE_ASSET_URL . '/css/settings' . $this->suffix . '.css',
 			],
 			'admin' => [
-				'src' => SWISE_ASSET_URI . '/css/admin' . $this->suffix . '.css',
+				'src' => SWISE_ASSET_URL . '/css/admin' . $this->suffix . '.css',
 			],
 			'dashboard' => [
-				'src' => SWISE_ASSET_URI . '/css/dashboard' . $this->suffix . '.css',
+				'src' => SWISE_ASSET_URL . '/css/dashboard' . $this->suffix . '.css',
 			],
 		];
 	}
@@ -98,15 +98,15 @@ class Assets {
 	public function get_scripts() {
 		$scripts = [
 			'settings' => [
-				'src'       => SWISE_ASSET_URI . '/js/settings' . $this->suffix . '.js',
+				'src'       => SWISE_ASSET_URL . '/js/settings' . $this->suffix . '.js',
 				'in_footer' => true,
 			],
 			'dashboard' => [
-				'src'       => SWISE_ASSET_URI . '/js/dashboard' . $this->suffix . '.js',
+				'src'       => SWISE_ASSET_URL . '/js/dashboard' . $this->suffix . '.js',
 				'in_footer' => true,
 			],
 			'admin' => [
-				'src'       => SWISE_ASSET_URI . '/js/admin' . $this->suffix . '.js',
+				'src'       => SWISE_ASSET_URL . '/js/admin' . $this->suffix . '.js',
 				'in_footer' => true,
 			],
 		];

@@ -1,5 +1,6 @@
 node_modules
 build
+third-party
 npm-debug.log
 .DS_Store
 includes/.DS_Store

@@ -1,12 +1,14 @@
 === Sheet Wise ===
-Contributors: Sapayth H.
-Tags: Google Sheets, data sync, WordPress, Google API, automation, hooks
+Contributors: sapayth
+Tags: Google Sheets, Data sync, Google API, Automation, Hooks
 Requires at least: 5.0
-Tested up to: 6.4
-Stable tag: 1.0.0
-Requires PHP: 7.2
+Tested up to: 6.7
+Stable tag: 1.0.1
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+Sync WordPress data to Google Sheets seamlessly with Sheet Wise. Automate forms, posts, & more using powerful hooks. Perfect for effortless workflows!
 
 == Description ==
 **Sheet Wise** is a powerful WordPress plugin that enables seamless data synchronization between WordPress and Google Sheets. By using various hooks, it allows users to automatically send data from WordPress forms, custom posts, and other data sources directly to Google Sheets.
@@ -30,6 +32,31 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 - Automate data flow and management.
 - User-friendly interface for managing sync settings.
 
+== Step-by-Step Guide to Setting Up Sheet Wise ==
+**Step 1: Configure Google Service Account Credentials**
+1. Navigate to the WordPress Dashboard > Sheet Wise > Settings.
+2. Paste the Service Account Credential JSON into the text box provided.
+3. Click the Save button to store the credentials.
+4. If you're unsure how to obtain the JSON credentials, click the `How to?` link for detailed instructions.
+
+**Step 2: Add a New Integration**
+1. Go to the WordPress Dashboard > Sheet Wise and click Add New Integration.
+2. Fill out the following fields:
+    - Integration Title: Enter a title for the integration (e.g., "New User").
+    - Data Source: Select when the data should sync to your Google Sheet. Available options include triggers like:
+        Create, Update, Delete user, Login, Logout, Create, Edit, Trash post, Add, Edit comment.
+3. Spreadsheet & Worksheet: Choose the target Google Spreadsheet and Worksheet where the data should be saved.
+
+**Step 3: Map Data Fields to Google Sheet Columns**
+In the Spreadsheet Column Title section, the column names will be automatically retrieved from the spreadsheet you selected.
+For each column:
+1. Event Code: Use pre-defined placeholders (e.g., [[first_name]], [[user_login]]) to represent WordPress data fields. These placeholders will be automatically populated based on the Data Source Event Name dropdown.
+2. Repeat this mapping process for all required fields to ensure the data syncs accurately.
+
+**Step 4: Save the Integration**
+Once all fields are mapped and configured, click the Save button at the bottom of the page.
+The integration is now active, and data will sync automatically based on the selected triggers.
+
 == Installation ==
 1. Upload the `sheet-wise` folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
@@ -38,7 +65,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 == Frequently Asked Questions ==
 
 = What is the minimum PHP version required for Sheet Wise? =
-Sheet Wise requires PHP 7.2 or higher to function properly.
+Sheet Wise requires PHP 7.4 or higher to function properly.
 
 = How do I set up Google API integration? =
 After activating the plugin, navigate to the plugin settings page where you will find instructions to set up and link your Google API for seamless data transfer.
@@ -46,9 +73,22 @@ After activating the plugin, navigate to the plugin settings page where you will
 = Can I customize which data is sent to Google Sheets? =
 Yes, you can select from various hooks and customize which data to sync according to your needs.
 
+== ==
+
+
+
+
+== Screenshots ==
+
+1. Add new integration
+2. Settings for Sheet Wise
+
 == Changelog ==
 
-= 1.0.0 =
+= v1.0.1 (4 Dec, 2024) =
+* Enhance - How to page added for Google API setup
+
+= v1.0.0 (30 Nov, 2024) =
 * Initial release
 * Sync data from WordPress to Google Sheets using various hooks
 * User-friendly settings page for API setup and sync management
@@ -61,4 +101,4 @@ Initial release. Please ensure your PHP version is 7.2 or higher for compatibili
 For any support requests, please visit our support page or reach out to us through the WordPress support forums.
 
 == Tags ==
-Google Sheets, data sync, WordPress plugin, automation, Google API, data management, PHP 7.2
+Google Sheets, data sync, WordPress plugin, automation, Google API, data management

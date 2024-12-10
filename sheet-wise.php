@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: Sheet Wise
- * Plugin URI: https://sapayth.com
  * Description: Sync and manage your Google Sheets spreadsheet through your WordPress site.
  * Show google sheet contents in your site.
- * Author: Sapayth H.
- * Author URI: https://sapayth.com
- * Version: 1.0.0
+ * Author: sapayth
+ * Version: 1.0.1
  * Text Domain: sheet-wise
+ * license: GPL-2.0+
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -67,11 +67,11 @@ final class SheetWise {
 	 * @return void
 	 */
 	public function define_constants() {
-		$this->define( 'SWISE_VERSION', '1.0.0' );
+		$this->define( 'SWISE_VERSION', '1.0.1' );
 		$this->define( 'SWISE_FILE', __FILE__ );
 		$this->define( 'SWISE_ROOT', __DIR__ );
-		$this->define( 'SWISE_ROOT_URI', plugins_url( '', __FILE__ ) );
-		$this->define( 'SWISE_ASSET_URI', SWISE_ROOT_URI . '/assets' );
+		$this->define( 'SWISE_ROOT_URL', plugins_url( '', __FILE__ ) );
+		$this->define( 'SWISE_ASSET_URL', SWISE_ROOT_URL . '/assets' );
 		$this->define( 'SWISE_INCLUDES', SWISE_ROOT . '/includes' );
 	}
 
