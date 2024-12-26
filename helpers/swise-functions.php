@@ -45,7 +45,49 @@ function swise_get_settings_schema( $section = '' ) {
 	 *                                             ===, !==, >, <, >=, <=
 	 *                                             }
 	 */
-	$schema = apply_filters( 'swise_settings_schema', [] );
+
+	$settings['google_sheet'] = [
+		'label'       => __( 'Google Sheet', 'sheet-wise' ),
+		'description' => __( 'Google Sheet related settings', 'sheet-wise' ),
+		'type'        => 'object',
+		'context'     => [ 'view', 'edit' ],
+		'icon'        => 'table-cells',
+		'fields'      => [
+			'credential_json'      => [
+				'label'       => __( 'Service Account Credential JSON', 'sheet-wise' ),
+				'description' => sprintf(
+					__( 'Copy the full JSON file Credentials and paste it here. %1$sHow to?%2$s', 'sheet-wise' ),
+					'<a href="' . admin_url( 'admin.php?page=sheet-wise-settings#/how-to' ) . '" target="_blank">',
+					'</a>'
+				),
+				'type'        => 'string',
+				'default'     => '',
+				'context'     => [ 'view', 'edit' ],
+				'field_type'  => 'textarea',
+			],
+		],
+	];
+
+	$settings['integrations'] = [
+		'label'       => __( 'Integrations', 'sheet-wise' ),
+		'description' => __( 'Third party integration related settings', 'sheet-wise' ),
+		'type'        => 'object',
+		'context'     => [ 'view', 'edit' ],
+		'icon'        => 'table-cells',
+		'fields'      => [
+			'woocommerce'      => [
+				'label'       => __( 'WooCommerce', 'sheet-wise' ),
+				'description' => __( 'Toggle on the WooCommerce integrations to active WooCommerce hooks', 'sheet-wise' ),
+				'type'        => 'boolean',
+				'default'     => '',
+				'context'     => [ 'view', 'edit' ],
+				'field_type'  => 'toggle',
+			],
+		],
+	];
+
+	$schema = apply_filters( 'swise_settings_schema', $settings );
+
 	// return specific settings schema
 	if ( $section && isset( $schema[ $section ] ) ) {
 		return $schema[ $section ];

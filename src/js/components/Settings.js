@@ -2,17 +2,17 @@ import React, { Fragment, useState, useEffect } from 'react';
 import {
     Spinner,
     Card,
-    CardBody,
+    CardBody
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import Header from './Header';
 import {HashRouter, Route, Routes} from 'react-router-dom';
-import settings from '../routes/settings';
+import settingsRoute from '../routes/settings';
 import HowTo from './HowTo';
 
 export default function Settings() {
     const [isLoading, setIsLoading] = useState( false );
-    const [credentialJson, setCredentialJson] = useState( '' );
+    const [settings, setSettings] = useState( {} );
     const [errors, setErrors] = useState( {} );
 
     useEffect(() => {
@@ -27,7 +27,7 @@ export default function Settings() {
             .then((response) => response.json())
             .then((data) => {
                 if (data.code === 200) {
-                    setCredentialJson(data.credential);
+                    setSettings( data.settings );
                 }
             })
             .catch((err) => {
@@ -52,7 +52,7 @@ export default function Settings() {
 
         setIsLoading( true );
 
-        if (!isJsonString( credentialJson )) {
+        /*if (!isJsonString( credentialJson )) {
             setErrors(
                 {
                     credential: {
@@ -89,7 +89,7 @@ export default function Settings() {
             );
 
             return;
-        }
+        }*/
 
         await fetch( swiseSettings.restURL + '/settings', {
             method: 'PATCH',
@@ -98,13 +98,13 @@ export default function Settings() {
                 'X-WP-Nonce': swiseSettings.nonce,
             },
             body: JSON.stringify( {
-                credentialJson: credentialJson,
+                settings: settings,
             } ),
         } )
             .then( ( response ) => response.json() )
             .then( ( data ) => {
                 if (data.code === 200) {
-                    setCredentialJson( data.credential );
+                    // setCredentialJson( data.credential );
                 }
             } )
             .catch( ( err ) => {
@@ -115,153 +115,211 @@ export default function Settings() {
             });
     }
 
-    const SettingsOptions = () => {
+    const renderField = (sectionKey, fieldKey, fieldConfig) => {
+
+        const section = settings[sectionKey];
+
+        if (!section) {
+            return;
+        }
+
+        const [value, setValue] = useState( section[fieldKey] );
+
+        switch (fieldConfig.field_type) {
+            case 'textarea':
+                return (
+                    <div key={fieldKey} className="swise-space-y-2">
+                        <label
+                            htmlFor={fieldKey}
+                            className="swise-block swise-text-sm swise-font-medium swise-text-gray-700"
+                        >
+                            {fieldConfig.label}
+                        </label>
+                        <textarea
+                            id={fieldKey}
+                            placeholder={`Enter ${fieldConfig.label}`}
+                            value={value}
+                            onChange={(e) => {
+                                setValue(e.target.value);
+                                settings[sectionKey][fieldKey] = e.target.value;
+                            }}
+                            className="swise-w-full min-h-32 swise-p-2 swise-border swise-border-gray-300 swise-rounded-md focus:swise-ring-2 focus:swise-ring-blue-500 focus:swise-border-blue-500"
+                        />
+                        <p
+                            className="swise-text-sm swise-text-gray-500"
+                            dangerouslySetInnerHTML={{__html: fieldConfig.description}}
+                        />
+                    </div>
+                );
+            default:
+                return null;
+        }
+    };
+
+    const Field = ( {field, sectionKey} ) => {
+        const fieldKey = field.id;
+        const fieldType = field.type;
+        const fieldLabel = field.label;
+        const placeholder = field.placeholder;
+        const description = field.description;
+
+        const [value, setValue] = useState( settings[sectionKey][fieldKey] );
+
+        switch (fieldType) {
+            case 'textarea':
+                return (
+                    <textarea
+                        id={fieldKey}
+                        placeholder={placeholder}
+                        value={value}
+                        onChange={(e) => {
+                            setValue(e.target.value);
+                            settings[sectionKey][fieldKey] = e.target.value;
+                        }}
+                        className="swise-w-full min-h-32 swise-p-2 swise-border swise-border-gray-300 swise-rounded-md focus:swise-ring-2 focus:swise-ring-blue-500 focus:swise-border-blue-500"
+                    />
+                );
+            default:
+                return (
+                    <input
+                        type="text"
+                        id={fieldKey}
+                        placeholder={`Enter ${fieldLabel}`}
+                        value={value}
+                        onChange={(e) => {
+                            setValue(e.target.value);
+                            settings[sectionKey][fieldKey] = e.target.value;
+                        }}
+                        className="swise-w-full swise-p-2 swise-border swise-border-gray-300 swise-rounded-md focus:swise-ring-2 focus:swise-ring-blue-500 focus:swise-border-blue-500"
+                    />
+                );
+        }
+    };
+
+    const TabContentForm = ({ tabKey, title, description, fields }) => {
+        if (!settings[tabKey]) {
+            return (
+                <></>
+            );
+        }
+
         return (
-            <>
-                <div className="swise-border-b swise-border-gray-200 dark:swise-border-gray-700">
-                    <ul className="swise-flex swise-flex-wrap swise--mb-px swise-text-sm swise-font-medium swise-text-gray-500 dark:swise-text-gray-400">
-                        <li className="me-2">
-                            <a href="#"
-                               className="swise-border-slate-600 swise-inline-flex swise-p-4 swise-border-b-2 swise-rounded-t-lg hover:swise-text-gray-600 hover:swise-border-gray-300 dark:hover:swise-text-gray-300 focus:swise-shadow-none">
-                                <svg width="15" height="20" viewBox="0 0 74 100" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <mask id="mask0_1:52" maskUnits="userSpaceOnUse" x="1" y="1" width="71"
-                                          height="98">
-                                        <path
-                                            d="M45.398 1.43036H7.86688C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V27.9229L45.398 1.43036Z"
-                                            fill="white"/>
-                                    </mask>
-                                    <g mask="url(#mask0_1:52)">
-                                        <path
-                                            d="M45.398 1.43036H7.86688C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V27.9229L56.4365 16.8843L45.398 1.43036Z"
-                                            fill="#0F9D58"/>
-                                    </g>
-                                    <mask id="mask1_1:52" maskUnits="userSpaceOnUse" x="1" y="1" width="71"
-                                          height="98">
-                                        <path
-                                            d="M45.398 1.43036H7.86688C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V27.9229L45.398 1.43036Z"
-                                            fill="white"/>
-                                    </mask>
-                                    <g mask="url(#mask1_1:52)">
-                                        <path
-                                            d="M18.9054 48.8962V80.908H54.2288V48.8962H18.9054ZM34.3594 76.4926H23.3209V70.9733H34.3594V76.4926ZM34.3594 67.6617H23.3209V62.1424H34.3594V67.6617ZM34.3594 58.8309H23.3209V53.3116H34.3594V58.8309ZM49.8134 76.4926H38.7748V70.9733H49.8134V76.4926ZM49.8134 67.6617H38.7748V62.1424H49.8134V67.6617ZM49.8134 58.8309H38.7748V53.3116H49.8134V58.8309Z"
-                                            fill="#F1F1F1"/>
-                                    </g>
-                                    <mask id="mask2_1:52" maskUnits="userSpaceOnUse" x="1" y="1" width="71"
-                                          height="98">
-                                        <path
-                                            d="M45.398 1.43036H7.86688C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V27.9229L45.398 1.43036Z"
-                                            fill="white"/>
-                                    </mask>
-                                    <g mask="url(#mask2_1:52)">
-                                        <path d="M47.3352 25.9856L71.8905 50.5354V27.9229L47.3352 25.9856Z"
-                                              fill="url(#paint0_linear_1:52)"/>
-                                    </g>
-                                    <mask id="mask3_1:52" maskUnits="userSpaceOnUse" x="1" y="1" width="71"
-                                          height="98">
-                                        <path
-                                            d="M45.398 1.43036H7.86688C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V27.9229L45.398 1.43036Z"
-                                            fill="white"/>
-                                    </mask>
-                                    <g mask="url(#mask3_1:52)">
-                                        <path
-                                            d="M45.398 1.43036V21.2998C45.398 24.959 48.3618 27.9229 52.0211 27.9229H71.8905L45.398 1.43036Z"
-                                            fill="#87CEAC"/>
-                                    </g>
-                                    <mask id="mask4_1:52" maskUnits="userSpaceOnUse" x="1" y="1" width="71"
-                                          height="98">
-                                        <path
-                                            d="M45.398 1.43036H7.86688C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V27.9229L45.398 1.43036Z"
-                                            fill="white"/>
-                                    </mask>
-                                    <g mask="url(#mask4_1:52)">
-                                        <path
-                                            d="M7.86688 1.43036C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V8.60542C1.24374 4.9627 4.22415 1.98229 7.86688 1.98229H45.398V1.43036H7.86688Z"
-                                            fill="white" fillOpacity="0.2"/>
-                                    </g>
-                                    <mask id="mask5_1:52" maskUnits="userSpaceOnUse" x="1" y="1" width="71"
-                                          height="98">
-                                        <path
-                                            d="M45.398 1.43036H7.86688C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V27.9229L45.398 1.43036Z"
-                                            fill="white"/>
-                                    </mask>
-                                    <g mask="url(#mask5_1:52)">
-                                        <path
-                                            d="M65.2674 98.0177H7.86688C4.22415 98.0177 1.24374 95.0373 1.24374 91.3946V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V91.3946C71.8905 95.0373 68.9101 98.0177 65.2674 98.0177Z"
-                                            fill="#263238" fillOpacity="0.2"/>
-                                    </g>
-                                    <mask id="mask6_1:52" maskUnits="userSpaceOnUse" x="1" y="1" width="71"
-                                          height="98">
-                                        <path
-                                            d="M45.398 1.43036H7.86688C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V27.9229L45.398 1.43036Z"
-                                            fill="white"/>
-                                    </mask>
-                                    <g mask="url(#mask6_1:52)">
-                                        <path
-                                            d="M52.0211 27.9229C48.3618 27.9229 45.398 24.959 45.398 21.2998V21.8517C45.398 25.511 48.3618 28.4748 52.0211 28.4748H71.8905V27.9229H52.0211Z"
-                                            fill="#263238" fillOpacity="0.1"/>
-                                    </g>
-                                    <path
-                                        d="M45.398 1.43036H7.86688C4.22415 1.43036 1.24374 4.41077 1.24374 8.0535V91.9465C1.24374 95.5893 4.22415 98.5697 7.86688 98.5697H65.2674C68.9101 98.5697 71.8905 95.5893 71.8905 91.9465V27.9229L45.398 1.43036Z"
-                                        fill="url(#paint1_radial_1:52)"/>
-                                    <defs>
-                                        <linearGradient id="paint0_linear_1:52" x1="59.6142" y1="28.0935"
-                                                        x2="59.6142" y2="50.5388" gradientUnits="userSpaceOnUse">
-                                            <stop stopColor="#263238" stopOpacity="0.2"/>
-                                            <stop offset="1" stopColor="#263238" stopOpacity="0.02"/>
-                                        </linearGradient>
-                                        <radialGradient id="paint1_radial_1:52" cx="0" cy="0" r="1"
-                                                        gradientUnits="userSpaceOnUse"
-                                                        gradientTransform="translate(3.48187 3.36121) scale(113.917)">
-                                            <stop stopColor="white" stopOpacity="0.1"/>
-                                            <stop offset="1" stopColor="white" stopOpacity="0"/>
-                                        </radialGradient>
-                                    </defs>
-                                </svg>
-                                &nbsp;&nbsp; {__( 'Google Sheet', 'swise' )}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <Card>
-                    <CardBody>
-                        <div>
-                            <label htmlFor="swise-credential"
-                                   className="swise-block swise-mb-2 swise-text-sm swise-font-medium swise-text-gray-900 dark:swise-text-white">
-                                {__( 'Service Account Credential JSON', 'swise' )}
-                            </label>
+            <div className="swise-bg-white swise-p-6 swise-rounded-lg swise-shadow">
+                <h2 className="swise-text-xl swise-font-semibold swise-mb-2">{title}</h2>
+                <p className="swise-text-sm swise-text-gray-500 swise-mb-4">{description}</p>
+                {fields.map((field, index) => (
+                    <div key={index} className="swise-mb-6">
+                        <label
+                            className="swise-block swise-text-sm swise-font-medium swise-text-gray-700"
+                            htmlFor={field.id}
+                        >
+                            {field.label}
+                        </label>
+                        <Field
+                            key={field.id}
+                            field={field}
+                            sectionKey={tabKey} />
+                        {/*{field.type === "textarea" ? (
                             <textarea
-                                id="swise-credential"
-                                onChange={( e ) => {
-                                    setCredentialJson( e.target.value );
-                                }}
-                                rows="10"
-                                value={credentialJson}
-                                className="swise-block swise-p-2.5 swise-w-full swise-text-sm swise-text-gray-900 swise-bg-gray-50 swise-rounded-lg swise-border swise-border-gray-300 focus:swise-ring-slate-500 focus:swise-border-slate-500 dark:swise-bg-gray-700 dark:swise-border-gray-600 dark:swise-placeholder-gray-400 dark:swise-text-white dark:focus:swise-ring-slate-500 dark:focus:swise-border-slate-500"></textarea>
-                            <div className="swise-mt-1 swise-text-sm">
-                                <p id="helper-text-explanation"
-                                   className="swise-mt-2 swise-text-gray-500 dark:swise-text-gray-400">
-                                    {__( 'Copy the full JSON file Credentials and paste it here. ', 'swise' )}
-                                    <a href={swiseSettings.pageURL + '#/how-to'}
-                                       className="swise-font-medium swise-text-blue-600 hover:swise-underline dark:swise-text-blue-500 focus:swise-shadow-none">{__( 'How to?', 'swise' )}</a>
-                                </p>
-                                {errors.credential &&
-                                    <p className="swise-mt-2 swise-text-sm swise-text-red-600 dark:swise-text-red-500">
-                                        {errors.credential.message}
-                                    </p>
-                                }
-                            </div>
-                            <button
-                                type="button"
-                                onClick={saveSettings}
-                                className="swise-mt-8 swise-text-white swise-bg-slate-700 hover:swise-bg-slate-800 swise-font-medium swise-rounded-lg swise-text-sm swise-px-5 swise-py-2.5 me-2 swise-mb-2 dark:swise-bg-slate-600 dark:hover:swise-bg-slate-700">{__( 'Save', 'swise' )}
-                            </button>
-                        </div>
-                    </CardBody>
-                </Card>
-            </>
-        )
-    }
+                                id={field.id}
+                                placeholder={field.placeholder}
+                                value={settings[tabKey][field.id]}
+                                className="swise-mt-2 swise-w-full swise-border swise-border-gray-300 swise-rounded-md swise-p-3 swise-text-gray-700 focus:swise-outline-none focus:swise-border-blue-500"
+                            />
+                        ) : (
+                            <input
+                                type={field.type}
+                                id={field.id}
+                                placeholder={field.placeholder}
+                                value={settings[tabKey][field.id]}
+                                className="swise-mt-2 swise-w-full swise-border swise-border-gray-300 swise-rounded-md swise-p-3 swise-text-gray-700 focus:swise-outline-none focus:swise-border-blue-500"
+                            />
+                        )}*/}
+                        {field.description && (
+                            <p className="swise-mt-1 swise-text-sm swise-text-gray-500">
+                                {field.description}
+                            </p>
+                        )}
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+    const TabsWithForms = () => {
+
+        if (!settings.google_sheet) {
+            return;
+        }
+
+        const tabsData = {
+            google_sheet: {
+                label: "Google Sheet",
+                description: "Google Sheet related settings",
+                fields: {
+                    credential_json: {
+                        label: "Service Account Credential JSON",
+                        description:
+                            'Copy the full JSON file Credentials and paste it here. <a href="https://sheet.test/wp-admin/admin.php?page=sheet-wise-settings#/how-to" target="_blank">How to?</a>',
+                        type: "textarea",
+                        placeholder: "Paste JSON here...",
+                    },
+                },
+            },
+            integrations: {
+                label: "Integrations",
+                description: "Third-party integration-related settings",
+                fields: {
+                    woocommerce: {
+                        label: "WooCommerce",
+                        description: "Toggle on the WooCommerce integrations to activate WooCommerce hooks.",
+                        type: "checkbox",
+                        placeholder: "",
+                    },
+                },
+            },
+        };
+
+        // const tabsData = settings;
+        const [activeTab, setActiveTab] = useState(Object.keys(tabsData)[0]);
+
+        return (
+            <div>
+                <div className="swise-flex swise-border-b swise-border-gray-300 swise-mb-4">
+                    {Object.keys(tabsData).map((tabKey) => (
+                        <button
+                            key={tabKey}
+                            onClick={() => setActiveTab(tabKey)}
+                            className={`swise-px-4 swise-py-2 swise-font-medium ${
+                                activeTab === tabKey
+                                    ? "swise-border-b-2 swise-border-black swise-text-black"
+                                    : "swise-text-gray-500"
+                            }`}
+                        >
+                            {tabsData[tabKey].label}
+                        </button>
+                    ))}
+                </div>
+                {Object.keys(tabsData).map(
+                    (tabKey) =>
+                        activeTab === tabKey && (
+                            <TabContentForm
+                                key={tabKey}
+                                tabKey={tabKey}
+                                title={tabsData[tabKey].label}
+                                description={tabsData[tabKey].description}
+                                fields={Object.entries(tabsData[activeTab].fields).map(
+                                    ([fieldKey, fieldData]) => ({
+                                        id: fieldKey,
+                                        ...fieldData,
+                                    })
+                                )}
+                            />
+                        )
+                )}
+            </div>
+        );
+    };
 
     if (isLoading) {
         return (
@@ -274,13 +332,10 @@ export default function Settings() {
     return (
         <>
             <Header version={swiseSettings.version}/>
-
             <HashRouter>
                 <Routes>
-                    <Route path={settings.home} element={<SettingsOptions />}/>
-                    <Route
-                        path={settings.docs.howto}
-                        element={<HowTo />}/>
+                    <Route path={settingsRoute.home} element={<TabsWithForms />}/>
+                    <Route path={settingsRoute.docs.howto} element={<HowTo/>}/>
                 </Routes>
             </HashRouter>
         </>

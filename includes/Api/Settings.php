@@ -56,28 +56,48 @@ class Settings extends Swise_REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function update_items( $request ) {
-		$credential = $request->get_param( 'credentialJson' );
+		$settings = $request->get_param( 'settings' );
 
-		if ( is_null( $credential ) ) {
+		if ( is_null( $settings ) ) {
 			return rest_ensure_response(
 				[
 					'code'    => 400,
-					'message' => __( 'Credential is required', 'sheet-wise' ),
+					'message' => __( 'Nothing to store/update', 'sheet-wise' ),
 				]
 			);
 		}
 
-		apply_filters( 'swise_before_update_credential', $credential );
+		$settings_schema = swise_get_settings_schema();
 
-		update_option( 'swise_service_account_credential', sanitize_textarea_field( $credential ) );
+		foreach ( $settings as $key => $value ) {
+			if ( ! isset( $settings_schema[ $key ] ) ) {
+				continue;
+			}
 
-		apply_filters( 'swise_after_update_credential', $credential );
+			$fields = $settings_schema[ $key ]['fields'];
+
+			$data_to_store = [];
+
+			foreach ( $fields as $field_key => $field_value ) {
+				if ( ! isset( $value[ $field_key ] ) ) {
+					continue;
+				}
+
+				$data_to_store[ $field_key ] = $value[ $field_key ];
+			}
+
+			apply_filters( 'swise_before_update_settings', $data_to_store, $key );
+			apply_filters( 'swise_before_update_' . $key, $data_to_store );
+			update_option( 'swise_settings_' . $key, $data_to_store );
+			apply_filters( 'swise_after_update_' . $key, $data_to_store );
+			apply_filters( 'swise_after_update_settings', $data_to_store, $key );
+		}
 
 		return rest_ensure_response(
 			[
 				'code'       => 200,
-				'message'    => __( 'Credential updated successfully', 'sheet-wise' ),
-				'credential' => $credential,
+				'message'    => __( 'Settings updated successfully', 'sheet-wise' ),
+				'credential' => $settings,
 			]
 		);
 	}
@@ -92,11 +112,21 @@ class Settings extends Swise_REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$credential = get_option( 'swise_service_account_credential' );
+		$settings_schema = swise_get_settings_schema();
+		$result = [];
+
+		foreach ( $settings_schema as $key => $value ) {
+			$option = get_option( 'swise_settings_' . $key );
+			$fields = $value['fields'];
+
+			foreach ($fields as $field_key => $field_value) {
+				$result[ $key ][ $field_key ] = ! empty( $option[ $field_key ] ) ? $option[ $field_key ] : '';
+			}
+		}
 
 		$settings = [
-			'code'       => 200,
-			'credential' => wp_kses_post( $credential ),
+			'code'     => 200,
+			'settings' => $result,
 		];
 
 		return rest_ensure_response( $settings );
