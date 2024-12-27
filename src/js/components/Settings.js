@@ -1,9 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import {
-    Spinner,
-    Card,
-    CardBody
+    Spinner, ToggleControl
 } from '@wordpress/components';
+import '@wordpress/components/build-style/style.css';
 import { __ } from '@wordpress/i18n';
 import Header from './Header';
 import {HashRouter, Route, Routes} from 'react-router-dom';
@@ -158,10 +157,9 @@ export default function Settings() {
 
     const Field = ( {field, sectionKey} ) => {
         const fieldKey = field.id;
-        const fieldType = field.type;
+        const fieldType = field.field_type;
         const fieldLabel = field.label;
         const placeholder = field.placeholder;
-        const description = field.description;
 
         const [value, setValue] = useState( settings[sectionKey][fieldKey] );
 
@@ -179,6 +177,19 @@ export default function Settings() {
                         className="swise-w-full min-h-32 swise-p-2 swise-border swise-border-gray-300 swise-rounded-md focus:swise-ring-2 focus:swise-ring-blue-500 focus:swise-border-blue-500"
                     />
                 );
+
+            case 'toggle':
+                return (
+                    <ToggleControl
+                        label={fieldLabel}
+                        checked={value}
+                        onChange={(newVal) => {
+                            setValue(newVal);
+                            settings[sectionKey][fieldKey] = newVal;
+                        }}
+                    />
+                );
+
             default:
                 return (
                     <input
@@ -205,9 +216,11 @@ export default function Settings() {
 
         return (
             <div className="swise-bg-white swise-p-6 swise-rounded-lg swise-shadow">
-                <h2 className="swise-text-xl swise-font-semibold swise-mb-2">{title}</h2>
-                <p className="swise-text-sm swise-text-gray-500 swise-mb-4">{description}</p>
-                {fields.map((field, index) => (
+                <div className="swise-mb-8">
+                    <h2 className="swise-text-xl swise-font-semibold swise-m-0">{title}</h2>
+                    <p className="swise-text-sm swise-text-gray-500 swise-my-4">{description}</p>
+                </div>
+                {fields.map( ( field, index ) => (
                     <div key={index} className="swise-mb-6">
                         <label
                             className="swise-block swise-text-sm swise-font-medium swise-text-gray-700"
@@ -246,41 +259,13 @@ export default function Settings() {
         );
     };
 
-    const TabsWithForms = () => {
-
+    const Settings = () => {
         if (!settings.google_sheet) {
             return;
         }
 
-        const tabsData = {
-            google_sheet: {
-                label: "Google Sheet",
-                description: "Google Sheet related settings",
-                fields: {
-                    credential_json: {
-                        label: "Service Account Credential JSON",
-                        description:
-                            'Copy the full JSON file Credentials and paste it here. <a href="https://sheet.test/wp-admin/admin.php?page=sheet-wise-settings#/how-to" target="_blank">How to?</a>',
-                        type: "textarea",
-                        placeholder: "Paste JSON here...",
-                    },
-                },
-            },
-            integrations: {
-                label: "Integrations",
-                description: "Third-party integration-related settings",
-                fields: {
-                    woocommerce: {
-                        label: "WooCommerce",
-                        description: "Toggle on the WooCommerce integrations to activate WooCommerce hooks.",
-                        type: "checkbox",
-                        placeholder: "",
-                    },
-                },
-            },
-        };
+        const tabsData = swiseSettings.settings;
 
-        // const tabsData = settings;
         const [activeTab, setActiveTab] = useState(Object.keys(tabsData)[0]);
 
         return (
@@ -290,7 +275,7 @@ export default function Settings() {
                         <button
                             key={tabKey}
                             onClick={() => setActiveTab(tabKey)}
-                            className={`swise-px-4 swise-py-2 swise-font-medium ${
+                            className={`swise-p-4 swise-text-base ${
                                 activeTab === tabKey
                                     ? "swise-border-b-2 swise-border-black swise-text-black"
                                     : "swise-text-gray-500"
@@ -317,6 +302,14 @@ export default function Settings() {
                             />
                         )
                 )}
+                <div className="swise-mt-4">
+                    <button
+                        onClick={saveSettings}
+                        className="swise-py-2 swise-px-4 swise-bg-blue-500 swise-text-white swise-rounded-md"
+                    >
+                        {__( 'Save Settings' )}
+                    </button>
+                </div>
             </div>
         );
     };
@@ -334,7 +327,7 @@ export default function Settings() {
             <Header version={swiseSettings.version}/>
             <HashRouter>
                 <Routes>
-                    <Route path={settingsRoute.home} element={<TabsWithForms />}/>
+                    <Route path={settingsRoute.home} element={<Settings />}/>
                     <Route path={settingsRoute.docs.howto} element={<HowTo/>}/>
                 </Routes>
             </HashRouter>
