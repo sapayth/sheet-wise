@@ -125,6 +125,7 @@ final class SheetWise {
 	 * @return void
 	 */
 	public function instantiate() {
+		$this->container['integrations']    = new SheetWise\Integrations();
 		$this->container['assets']          = new SheetWise\Assets();
 		$this->container['api']             = new SheetWise\Api();
 		$this->container['hooks']           = new SheetWise\Hooks();

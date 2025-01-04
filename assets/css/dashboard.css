@@ -1188,29 +1188,25 @@ html {
 .swise-m-6 {
   margin: 1.5rem;
 }
-.swise-my-5 {
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-}
-.swise-mx-4 {
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
 .swise-my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
+.swise-my-5 {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
 .swise--ml-\[20px\] {
   margin-left: -20px;
-}
-.swise-mb-2 {
-  margin-bottom: 0.5rem;
 }
 .swise-mb-4 {
   margin-bottom: 1rem;
 }
 .swise-mb-6 {
   margin-bottom: 1.5rem;
+}
+.swise-mb-8 {
+  margin-bottom: 2rem;
 }
 .swise-ml-4 {
   margin-left: 1rem;
@@ -1221,9 +1217,6 @@ html {
 .swise-mt-12 {
   margin-top: 3rem;
 }
-.swise-mt-2 {
-  margin-top: 0.5rem;
-}
 .swise-mt-4 {
   margin-top: 1rem;
 }
@@ -1232,9 +1225,6 @@ html {
 }
 .swise-mt-\[20px\] {
   margin-top: 20px;
-}
-.swise-mb-8 {
-  margin-bottom: 2rem;
 }
 .swise-block {
   display: block;
@@ -1278,11 +1268,6 @@ html {
 }
 .swise-justify-center {
   justify-content: center;
-}
-.swise-space-y-2 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 .swise-divide-y > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-y-reverse: 0;
@@ -1370,9 +1355,6 @@ html {
 .swise-p-2\.5 {
   padding: 0.625rem;
 }
-.swise-p-3 {
-  padding: 0.75rem;
-}
 .swise-p-4 {
   padding: 1rem;
 }
@@ -1427,6 +1409,10 @@ html {
   font-size: 1.5rem;
   line-height: 2rem;
 }
+.swise-text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
 .swise-text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -1438,10 +1424,6 @@ html {
 .swise-text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-.swise-text-base {
-  font-size: 1rem;
-  line-height: 1.5rem;
 }
 .swise-font-medium {
   font-weight: 500;
@@ -1550,10 +1532,6 @@ html {
 .focus\:swise-border-blue-500:focus {
   --tw-border-opacity: 1;
   border-color: rgb(59 130 246 / var(--tw-border-opacity, 1));
-}
-.focus\:swise-outline-none:focus {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
 }
 .focus\:swise-ring-2:focus {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);

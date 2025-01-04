@@ -213,20 +213,6 @@ function swise_get_data_sources() {
         ],
     ];
 
-    $integrations = swise_get_settings_schema( 'integrations' );
-    $saved_integrations = get_option( 'swise_settings_integrations' );
-
-    if ( ! empty( $integrations['fields'] ) ) {
-        foreach (array_keys( $integrations['fields'] ) as $integration) {
-            if ( ! empty( $saved_integrations[ $integration ] ) ) {
-                $sources['woocommerce_new_product'] = [
-                    'label'       => __( 'WooCommerce New Product' ),
-                    'num_of_args' => 2,
-                ];
-            }
-        }
-    }
-
     return apply_filters( 'swise_integration_data_sources', $sources );
 }
 

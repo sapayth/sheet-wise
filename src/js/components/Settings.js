@@ -114,47 +114,6 @@ export default function Settings() {
             });
     }
 
-    const renderField = (sectionKey, fieldKey, fieldConfig) => {
-
-        const section = settings[sectionKey];
-
-        if (!section) {
-            return;
-        }
-
-        const [value, setValue] = useState( section[fieldKey] );
-
-        switch (fieldConfig.field_type) {
-            case 'textarea':
-                return (
-                    <div key={fieldKey} className="swise-space-y-2">
-                        <label
-                            htmlFor={fieldKey}
-                            className="swise-block swise-text-sm swise-font-medium swise-text-gray-700"
-                        >
-                            {fieldConfig.label}
-                        </label>
-                        <textarea
-                            id={fieldKey}
-                            placeholder={`Enter ${fieldConfig.label}`}
-                            value={value}
-                            onChange={(e) => {
-                                setValue(e.target.value);
-                                settings[sectionKey][fieldKey] = e.target.value;
-                            }}
-                            className="swise-w-full min-h-32 swise-p-2 swise-border swise-border-gray-300 swise-rounded-md focus:swise-ring-2 focus:swise-ring-blue-500 focus:swise-border-blue-500"
-                        />
-                        <p
-                            className="swise-text-sm swise-text-gray-500"
-                            dangerouslySetInnerHTML={{__html: fieldConfig.description}}
-                        />
-                    </div>
-                );
-            default:
-                return null;
-        }
-    };
-
     const Field = ( {field, sectionKey} ) => {
         const fieldKey = field.id;
         const fieldType = field.field_type;
@@ -181,7 +140,6 @@ export default function Settings() {
             case 'toggle':
                 return (
                     <ToggleControl
-                        label={fieldLabel}
                         checked={value}
                         onChange={(newVal) => {
                             setValue(newVal);
@@ -232,22 +190,6 @@ export default function Settings() {
                             key={field.id}
                             field={field}
                             sectionKey={tabKey} />
-                        {/*{field.type === "textarea" ? (
-                            <textarea
-                                id={field.id}
-                                placeholder={field.placeholder}
-                                value={settings[tabKey][field.id]}
-                                className="swise-mt-2 swise-w-full swise-border swise-border-gray-300 swise-rounded-md swise-p-3 swise-text-gray-700 focus:swise-outline-none focus:swise-border-blue-500"
-                            />
-                        ) : (
-                            <input
-                                type={field.type}
-                                id={field.id}
-                                placeholder={field.placeholder}
-                                value={settings[tabKey][field.id]}
-                                className="swise-mt-2 swise-w-full swise-border swise-border-gray-300 swise-rounded-md swise-p-3 swise-text-gray-700 focus:swise-outline-none focus:swise-border-blue-500"
-                            />
-                        )}*/}
                         {field.description && (
                             <p className="swise-mt-1 swise-text-sm swise-text-gray-500">
                                 {field.description}
