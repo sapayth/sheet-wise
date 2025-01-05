@@ -14,10 +14,10 @@ class WooCommerce {
 
             if ( 'woocommerce_update_product' === $hook ) {
                 add_action( 'edit_post', [ $this, 'woocommerce_update_product' ], 10, $num_of_args );
-            }
-
-            if ( 'woocommerce_delete_product' === $hook ) {
+            } else if ( 'woocommerce_delete_product' === $hook ) {
                 add_action( 'before_delete_post', [ $this, 'woocommerce_delete_product' ], 10, $num_of_args );
+            } else {
+                add_action( $hook, [ $this, $hook ], 10, $num_of_args );
             }
         }
     }
@@ -46,8 +46,7 @@ class WooCommerce {
                 ),
                 'woocommerce_update_product'   => $this->common_product_data(),
                 'woocommerce_delete_product'   => $this->common_product_data(),
-                'woocommerce_update_order'     => $this->common_product_data(),
-                'woocommerce_payment_complete' => $this->common_product_data(),
+                'woocommerce_update_order'     => $this->common_order_data(),
             ]
         );
 
@@ -96,14 +95,9 @@ class WooCommerce {
                 ],
                 'woocommerce_delete_product'   => [
                     'label'       => __( 'WooCommerce Delete Product' ),
-                    'num_of_args' => 1,
                 ],
                 'woocommerce_update_order'     => [
                     'label'       => __( 'WooCommerce Update Order' ),
-                    'num_of_args' => 2,
-                ],
-                'woocommerce_payment_complete' => [
-                    'label'       => __( 'WooCommerce Payment Complete' ),
                     'num_of_args' => 2,
                 ],
             ]
@@ -112,6 +106,8 @@ class WooCommerce {
 
     /**
      * Common product data
+     *
+     * @since SWISE_SINCE
      *
      * @return array
      */
@@ -151,6 +147,50 @@ class WooCommerce {
             ],
             'sale_price'    => [
                 'label' => __( 'Sale Price', 'sheet-wise' ),
+                'type'  => 'text',
+            ],
+        ];
+    }
+
+    /**
+     * Common order data
+     *
+     * @since SWISE_SINCE
+     *
+     * @return array
+     */
+    protected function common_order_data() {
+        return [
+            'order_id'     => [
+                'label' => __( 'Order ID', 'sheet-wise' ),
+                'type'  => 'number',
+            ],
+            'order_status' => [
+                'label' => __( 'Order Status', 'sheet-wise' ),
+                'type'  => 'text',
+            ],
+            'order_date'   => [
+                'label' => __( 'Order Date', 'sheet-wise' ),
+                'type'  => 'date',
+            ],
+            'order_total'  => [
+                'label' => __( 'Order Total', 'sheet-wise' ),
+                'type'  => 'number',
+            ],
+            'total_tax'  => [
+                'label' => __( 'Total Tax', 'sheet-wise' ),
+                'type'  => 'number',
+            ],
+            'currency'    => [
+                'label' => __( 'Currency', 'sheet-wise' ),
+                'type'  => 'text',
+            ],
+            'shipping_total'   => [
+                'label' => __( 'Shipping Total', 'sheet-wise' ),
+                'type'  => 'number',
+            ],
+            'order_key'   => [
+                'label' => __( 'Order Key', 'sheet-wise' ),
                 'type'  => 'text',
             ],
         ];
@@ -289,9 +329,51 @@ class WooCommerce {
             'swise_user',
             true
         );
-
     }
-    public function woocommerce_update_order( $product_id, $product ) {}
-    public function woocommerce_payment_complete( $product_id, $product ) {}
 
+    /**
+     * Handle the WooCommerce update order hook
+     *
+     * @since SWISE_SINCE
+     *
+     * @param int $order_id
+     * @param object $order
+     *
+     * @return void
+     */
+    public function woocommerce_update_order( $order_id, $order ) {
+        $hook = 'woocommerce_update_order';
+
+        if ( ! $order instanceof \WC_Order ) {
+            return;
+        }
+
+        $order_data = [
+            'order_id'       => $order->get_id(),
+            'order_status'   => $order->get_status(),
+            'order_date'     => $order->get_date_created()->date_i18n(),
+            'order_total'    => $order->get_total(),
+            'total_tax'      => $order->get_total_tax(),
+            'currency'       => $order->get_currency(),
+            'shipping_total' => $order->get_shipping_total(),
+            'order_key'      => $order->get_order_key(),
+        ];
+
+        // define hook name beforehand
+        $creation_hook = 'sheetwise_scheduled_' . $hook;
+
+        as_enqueue_async_action(
+            $creation_hook,
+            [
+                'args' => [
+                    'type'   => 'woocommerce',
+                    'hook'   => $hook,
+                    'values' => $order_data,
+                    'id'     => $order_id,
+                ],
+            ],
+            'swise_user',
+            true
+        );
+    }
 }

@@ -4791,6 +4791,9 @@ html {
 .swise-justify-center {
   justify-content: center;
 }
+.swise-justify-between {
+  justify-content: space-between;
+}
 .swise-divide-y > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
@@ -4947,11 +4950,18 @@ html {
   font-size: 0.75rem;
   line-height: 1rem;
 }
+.swise-text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
 .swise-font-medium {
   font-weight: 500;
 }
 .swise-font-semibold {
   font-weight: 600;
+}
+.swise-font-bold {
+  font-weight: 700;
 }
 .swise-leading-none {
   line-height: 1;
@@ -5004,6 +5014,13 @@ html {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
+.swise-text-indigo-400 {
+  --tw-text-opacity: 1;
+  color: rgb(129 140 248 / var(--tw-text-opacity, 1));
+}
+.swise-underline {
+  text-decoration-line: underline;
+}
 .swise-shadow {
   --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
@@ -5051,9 +5068,20 @@ html {
   --tw-text-opacity: 1;
   color: rgb(127 29 29 / var(--tw-text-opacity, 1));
 }
+.hover\:swise-text-indigo-300:hover {
+  --tw-text-opacity: 1;
+  color: rgb(165 180 252 / var(--tw-text-opacity, 1));
+}
+.hover\:swise-no-underline:hover {
+  text-decoration-line: none;
+}
 .focus\:swise-border-blue-500:focus {
   --tw-border-opacity: 1;
   border-color: rgb(59 130 246 / var(--tw-border-opacity, 1));
+}
+.focus\:swise-text-indigo-300:focus {
+  --tw-text-opacity: 1;
+  color: rgb(165 180 252 / var(--tw-text-opacity, 1));
 }
 .focus\:swise-ring-2:focus {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);

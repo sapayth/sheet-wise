@@ -191,8 +191,8 @@ export default function Settings() {
                             field={field}
                             sectionKey={tabKey} />
                         {field.description && (
-                            <p className="swise-mt-1 swise-text-sm swise-text-gray-500">
-                                {field.description}
+                            <p className="swise-mt-1 swise-text-sm swise-text-gray-500"
+                               dangerouslySetInnerHTML={{__html: field.description}}>
                             </p>
                         )}
                     </div>
