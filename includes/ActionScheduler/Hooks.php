@@ -4,6 +4,7 @@ namespace SheetWise\ActionScheduler;
 
 use SheetWise\Admin\GoogleSheet;
 use SheetWise\ThirdParty\Google\Service\Exception;
+use SheetWise\ThirdParty\Google\Service\Sheets\AppendValuesResponse;
 use SheetWise\ThirdParty\Google\Service\Sheets\ValueRange;
 
 class Hooks {
@@ -25,16 +26,16 @@ class Hooks {
 	 *
 	 * @param array $args
 	 *
-	 * @return bool|\SheetWise\ThirdParty\Google\Service\Sheets\AppendValuesResponse
+	 * @return bool|AppendValuesResponse
 	 */
 	public function process_data( $args ) {
 		if ( empty( $args['hook'] ) || empty( $args['values'] ) || empty( $args['type'] ) || empty( $args['id'] ) ) {
 			return false;
 		}
 
-		$hook    = ! empty( $args['hook'] ) ? $args['hook'] : '';
+		$hook    = $args['hook'];
 		$results = $this->get_results( $hook );
-		$values = ! empty( $args['values'] ) ? $args['values'] : [];
+		$values  = is_array( $args['values'] ) ? $args['values'] : [];
 
 		if ( empty( $results ) ) {
 			return false;
@@ -59,11 +60,11 @@ class Hooks {
 				continue;
 			}
 
-			$comment_values = [];
+			$submitted_values = [];
 			$default_events = array_keys( $all_event_codes[ $hook ] );
 
 			foreach ( $default_events as $event ) {
-				$comment_values[] = isset( $values[ $event ] ) ? $values[ $event ] : '';
+				$submitted_values[] = isset( $values[ $event ] ) ? $values[ $event ] : '';
 			}
 
 			// add `[[` and `]]` to the $default_events array
@@ -76,7 +77,7 @@ class Hooks {
 			$values = [];
 
 			foreach ( $data['event_codes'] as $event_code ) {
-				$values[] = str_replace( $default_events, $comment_values, $event_code );
+				$values[] = str_replace( $default_events, $submitted_values, $event_code );
 			}
 
 			$values = apply_filters( 'swise_values_to_insert_' . $hook, $values, $hook, $result );

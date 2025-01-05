@@ -28,6 +28,7 @@ class Settings {
 				'restURL'  => rest_url( 'swise/v1' ),
 				'pageURL'  => admin_url( 'admin.php?page=sheet-wise-settings' ),
 				'assetURL' => SWISE_ASSET_URL,
+				'settings' => swise_get_settings_schema(),
 			]
 		);
 	}

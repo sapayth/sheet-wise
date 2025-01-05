@@ -1,8 +1,8 @@
-const settings = {
+const settingsRoute = {
     home: '/',
     docs: {
         howto: '/how-to',
     },
 };
 
-export default settings;
+export default settingsRoute;
