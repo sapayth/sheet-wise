@@ -81,7 +81,7 @@ function swise_get_settings_schema( $section = '' ) {
                     'Toggle on the WooCommerce integrations to active WooCommerce hooks', 'sheet-wise'
                 ),
                 'type'        => 'boolean',
-                'default'     => '',
+                'default'     => true,
                 'context'     => [ 'view', 'edit' ],
                 'field_type'  => 'toggle',
             ],

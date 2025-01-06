@@ -3,7 +3,7 @@ Contributors: sapayth
 Tags: Google Sheets, Data sync, Google API, Automation, Hooks
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -14,6 +14,7 @@ Sync WordPress data to Google Sheets seamlessly with Sheet Wise. Automate forms,
 **Sheet Wise** is a powerful WordPress plugin that enables seamless data synchronization between WordPress and Google Sheets. By using various hooks, it allows users to automatically send data from WordPress forms, custom posts, and other data sources directly to Google Sheets.
 
 **Supported Hooks:**
+Sheet Wise supports the following WordPress hooks for data synchronization:
 - **user_register**: Syncs data when a new user registers.
 - **wp_update_user**: Syncs data when a user profile is updated.
 - **delete_user**: Syncs data when a user is deleted.
@@ -24,10 +25,15 @@ Sync WordPress data to Google Sheets seamlessly with Sheet Wise. Automate forms,
 - **wp_trash_post**: Syncs data when a post is deleted (trashed).
 - **wp_insert_comment**: Syncs data when a new comment is added.
 - **edit_comment**: Syncs data when a comment edited.
+Woocommerce Integration:
+- **woocommerce_new_product**: Syncs data when a new product is created.
+- **woocommerce_update_product**: Syncs data when a product is updated.
+- **woocommerce_delete_product**: Syncs data when a product is deleted.
+- **woocommerce_update_order**: Syncs data when an order data is changed.
 
 **Key Features:**
 - Sync WordPress data with Google Sheets.
-- Support for different WordPress hooks for customizable data transfer.
+- Support for different WordPress and WooCommerce hooks for customizable data transfer.
 - Easy integration with Google API.
 - Automate data flow and management.
 - User-friendly interface for managing sync settings.
@@ -84,6 +90,9 @@ Yes, you can select from various hooks and customize which data to sync accordin
 2. Settings for Sheet Wise
 
 == Changelog ==
+
+= v1.1.0 (5 Jan, 2025) =
+* Enhance - Added WooCommerce integration
 
 = v1.0.1 (4 Dec, 2024) =
 * Enhance - How to page added for Google API setup

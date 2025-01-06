@@ -4,7 +4,8 @@
  * Description: Sync and manage your Google Sheets spreadsheet through your WordPress site.
  * Show google sheet contents in your site.
  * Author: sapayth
- * Version: 1.0.1
+ * Author URI: https://sapayth.com/
+ * Version: 1.1.0
  * Text Domain: sheet-wise
  * license: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
@@ -67,7 +68,7 @@ final class SheetWise {
 	 * @return void
 	 */
 	public function define_constants() {
-		$this->define( 'SWISE_VERSION', '1.0.1' );
+		$this->define( 'SWISE_VERSION', '1.1.0' );
 		$this->define( 'SWISE_FILE', __FILE__ );
 		$this->define( 'SWISE_ROOT', __DIR__ );
 		$this->define( 'SWISE_ROOT_URL', plugins_url( '', __FILE__ ) );
