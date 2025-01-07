@@ -8,7 +8,8 @@
     "build:dev": "NODE_ENV=dev wp-scripts build --progress",
     "packages-update": "wp-scripts packages-update",
     "watch": "NODE_ENV=development wp-scripts start --progress",
-    "zip": "./zip.sh"
+    "zip": "./zip.sh",
+    "phpdoc": "php phpDocumentor.phar"
   },
   "keywords": [],
   "author": "Sapayth",
