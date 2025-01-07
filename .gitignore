@@ -1,5 +1,4 @@
 node_modules
-build
 third-party
 npm-debug.log
 .DS_Store
@@ -8,6 +7,7 @@ includes/.DS_Store
 /includes/.DS_Store
 package-lock.json
 config.json
+phpDocumentor.phar
 
 /assets/js/**.hot-update.js
 /assets/js/**.hot-update.json
@@ -20,5 +20,6 @@ phpcs-report.txt
 .phpunit.result.cache
 
 # distribution files
-/dist/
-/build/
+build
+docs
+.phpdoc

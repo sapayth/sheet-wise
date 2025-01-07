@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor configVersion="3.0">
+    <title>Sheet Wise</title>
+    <paths>
+        <output>docs</output>
+    </paths>
+    <version number="3.0">
+        <api format="php">
+            <ignore hidden="true" symlinks="true">
+                <path>third-party/**/*</path>
+            </ignore>
+        </api>
+    </version>
+</phpdocumentor>

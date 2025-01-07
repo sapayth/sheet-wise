@@ -10,6 +10,7 @@ We appreciate your interest in contributing to the **Sheet Wise Plugin**, a tool
 - [Commit Messages](#commit-messages)
 - [Submitting Your Pull Request](#submitting-your-pull-request)
 - [Code of Conduct](#code-of-conduct)
+- [Generating Documentation](#generating-documentation)
 
 ## Getting Started
 
@@ -102,7 +103,6 @@ We follow a consistent commit message format:
 - **perf**: Performance improvements.
 - **test**: Add or modify tests.
 
-
 ## Submitting Your Pull Request
 
 Once you're ready to submit your changes:
@@ -122,3 +122,24 @@ Once you're ready to submit your changes:
 
 By participating in this project, you agree to abide by the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/0/code_of_conduct/).
 
+## Generating Documentation
+
+To generate documentation using PHP Documentor, follow these steps:
+
+1. **Download the `phpDocumentor.phar` file** from the official PHP Documentor website:
+    ```bash
+    https://github.com/phpDocumentor/phpDocumentor/releases
+    ```
+
+2. **Generate the documentation**:
+
+   using bash
+    ```bash
+    php phpDocumentor.phar
+    ```
+   using npm
+    ```
+   npm run phpdoc
+    ```
+
+3. The generated documentation will be available in the `docs` directory as specified in the `phpdoc.dist.xml` configuration file.
